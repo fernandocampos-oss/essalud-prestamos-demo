@@ -7,6 +7,8 @@ const appRoot = path.join(__dirname, '..', 'src', 'app');
 const source = fs.readFileSync(path.join(appRoot, 'app.component.ts'), 'utf8');
 const template = fs.readFileSync(path.join(appRoot, 'app.component.html'), 'utf8');
 const formStyles = fs.readFileSync(path.join(appRoot, 'worker-loans-form.css'), 'utf8');
+const requestStyles = fs.readFileSync(path.join(appRoot, 'worker-loans-requests.css'), 'utf8');
+const detailStyles = fs.readFileSync(path.join(appRoot, 'worker-loans-details.css'), 'utf8');
 const apiSource = fs.readFileSync(path.join(appRoot, 'core', 'api.service.ts'), 'utf8');
 
 test('la autenticación no genera una confirmación de operación', () => {
@@ -65,6 +67,16 @@ test('el seguimiento ofrece detalle, confirmación de cancelación y PDF solo pa
   assert.match(template, /certificateAvailable\(data\(\)\.request\)/);
   assert.match(template, /Descargar constancia PDF/);
   assert.match(source, /getFile\(`\/worker\/requests\/\$\{r\.id\}\/constancia\.pdf`\)/);
+});
+
+test('el seguimiento conserva una tarjeta de tres zonas sin cuadrículas heredadas del detalle', () => {
+  assert.match(template, /loan-request-card-header[\s\S]*operationLabel\(r\.type\)[\s\S]*r\.bankName[\s\S]*workerStatusLabel\(r\.status\)/);
+  assert.match(template, /loan-request-facts[\s\S]*Período[\s\S]*Capacidad mensual registrada[\s\S]*Registro/);
+  assert.match(template, /loan-request-actions[\s\S]*class="primary"[\s\S]*Cancelar solicitud/);
+  assert.match(template, /Cancelada por el trabajador\. Esta solicitud ya no se encuentra en evaluación\./);
+  assert.match(requestStyles, /\.loan-request-facts\s*\{[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(requestStyles, /\.loan-request-actions\s*\{[\s\S]*justify-content:\s*flex-end/);
+  assert.doesNotMatch(detailStyles, /\.loan-request-card/);
 });
 
 test('la constancia informativa de capacidad se descarga fuera de las solicitudes y usa la verificación pública', () => {
