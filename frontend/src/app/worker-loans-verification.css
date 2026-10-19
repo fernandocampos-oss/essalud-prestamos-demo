@@ -1,0 +1,53 @@
+.loan-public-header { background: #0077c8; border-bottom-color: color-mix(in srgb, #fff 14%, transparent); box-shadow: 0 3px 14px rgba(0, 78, 135, .18); }
+.loan-public-header .brand, .loan-public-header .loan-product-name strong { color: #fff; }
+.loan-public-header .loan-product-name small { color: #d9efff; }
+.loan-public-verification { display: grid; gap: 24px; margin: 8px auto 0; max-width: 1060px; }
+.loan-verification-intro { align-items: end; display: flex; gap: 24px; justify-content: space-between; }
+.loan-verification-kicker { color: var(--loan-blue-strong); font-size: 13px; font-weight: 750; margin: 0 0 8px; }
+.loan-verification-intro h1, .loan-verification-error h1 { color: var(--loan-ink); font-size: clamp(25px, 3vw, 34px); letter-spacing: -.025em; margin: 0; }
+.loan-verification-intro p:not(.loan-verification-kicker) { color: var(--loan-copy); line-height: 1.55; margin: 9px 0 0; max-width: 690px; }
+.loan-verification-status { align-items: center; border: 1px solid; border-radius: 7px; display: inline-flex; flex: 0 0 auto; font-size: 13px; font-weight: 750; gap: 8px; padding: 10px 12px; }
+.loan-verification-status svg, .loan-verification-icon svg { fill: none; height: 19px; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; width: 19px; }
+.loan-verification-status.is-valid { background: #e7f5ed; border-color: #acd9bd; color: #176b48; }
+.loan-verification-status.is-expired { background: #fff5d8; border-color: #ebce79; color: #805c08; }
+.loan-verification-status.is-unknown { background: var(--loan-wash); border-color: #b5d8ee; color: var(--loan-blue-strong); }
+.loan-verification-status.is-invalid { background: #fcebed; border-color: #eab7bf; color: #a52b3c; }
+.loan-verification-layout { display: grid; gap: 20px; grid-template-columns: minmax(0, 1.42fr) minmax(300px, .86fr); }
+.loan-verification-primary, .loan-verification-record, .loan-authorization-verification, .loan-verification-error { background: #fff; border: 1px solid #d5e4ed; border-radius: 10px; box-shadow: 0 8px 24px rgba(23, 50, 77, .07); }
+.loan-verification-primary { background: linear-gradient(145deg, #fff 0%, #f2f9fd 100%); padding: 32px; }
+.loan-verification-primary > p:first-child { color: var(--loan-copy); font-size: 14px; margin: 0; }
+.loan-verification-primary > strong { color: var(--loan-ink); display: block; font-size: clamp(38px, 5vw, 55px); letter-spacing: -.055em; line-height: 1.04; margin: 9px 0; }
+.loan-verification-primary > span { color: var(--loan-copy); font-size: 14px; line-height: 1.5; }
+.loan-verification-primary dl { border-top: 1px solid #cfe3ef; display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 27px; }
+.loan-verification-primary dl div { padding: 17px 14px 0 0; }
+.loan-verification-primary dl div + div { border-left: 1px solid #cfe3ef; padding-left: 18px; }
+.loan-verification-primary dt, .loan-verification-record dt, .loan-authorization-verification dt { color: #5a7082; font-size: 12px; margin-bottom: 5px; }
+.loan-verification-primary dd, .loan-verification-record dd, .loan-authorization-verification dd { color: var(--loan-ink); font-size: 15px; font-weight: 750; margin: 0; }
+.loan-verification-note { background: #fff9e9; border-left: 3px solid #c99018; color: #5c4a18; font-size: 13px; line-height: 1.5; margin: 25px 0 0; padding: 12px 14px; }
+.loan-verification-record { padding: 25px; }
+.loan-verification-record h2 { color: var(--loan-ink); font-size: 18px; margin: 0 0 18px; }
+.loan-verification-record dl { display: grid; gap: 14px; margin: 0; }
+.loan-code { color: var(--loan-blue-strong) !important; font-size: 13px !important; letter-spacing: .025em; overflow-wrap: anywhere; }
+.loan-verification-qr { align-items: center; border-top: 1px solid #d9e7ef; display: flex; gap: 13px; margin-top: 20px; padding-top: 17px; }
+.loan-verification-qr img { height: 72px; width: 72px; }
+.loan-verification-qr span { color: var(--loan-copy); font-size: 12px; line-height: 1.45; }
+.loan-verification-demo { color: #617587; font-size: 12px; line-height: 1.45; margin: 0; text-align: center; }
+.loan-verification-error { align-items: flex-start; display: flex; gap: 18px; margin-top: 40px; padding: 30px; }
+.loan-verification-error > div { display: grid; gap: 12px; }
+.loan-verification-error p { color: var(--loan-copy); line-height: 1.5; margin: 0; }
+.loan-verification-error button { justify-self: start; }
+.loan-verification-icon { align-items: center; background: #fff5d8; border-radius: 50%; color: #805c08; display: inline-flex; height: 42px; justify-content: center; width: 42px; }
+.loan-authorization-verification { align-items: start; display: grid; gap: 26px; grid-template-columns: minmax(0, 1fr) 150px; padding: 28px; }
+.loan-authorization-verification dl { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.loan-authorization-verification img { height: 140px; width: 140px; }
+.loan-authorization-verification p { color: var(--loan-copy); font-size: 13px; grid-column: 1 / -1; margin: 0; }
+
+@media (max-width: 760px) {
+  .loan-public-verification { gap: 18px; margin-top: 0; }
+  .loan-verification-intro, .loan-verification-layout, .loan-authorization-verification { display: grid; grid-template-columns: 1fr; }
+  .loan-verification-status { justify-self: start; }
+  .loan-verification-primary, .loan-verification-record { padding: 23px; }
+  .loan-verification-primary dl, .loan-authorization-verification dl { grid-template-columns: 1fr; }
+  .loan-verification-primary dl div + div { border-left: 0; border-top: 1px solid #cfe3ef; margin-top: 14px; padding-left: 0; padding-top: 14px; }
+  .loan-authorization-verification img { order: -1; }
+}

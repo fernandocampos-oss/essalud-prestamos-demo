@@ -1,0 +1,64 @@
+<main class="demo-home">
+  <header class="demo-toolbar">
+    <div class="demo-identity"><strong>Préstamos por Convenio</strong><span>Centro de demostración</span></div>
+    <span class="demo-mode"><i></i>Modo demostración</span>
+  </header>
+
+  <section class="demo-brief" aria-labelledby="demo-title">
+    <div class="brief-copy">
+      <p>Recorrido ejecutivo</p>
+      <h1 id="demo-title">Modernización del proceso de Préstamos por Convenio</h1>
+      <span>Una experiencia conectada para que trabajador, banco y EsSalud actúen sobre información verificable.</span>
+      <div class="brief-roles"><b>Trabajador</b><i></i><b>Banco</b><i></i><b>EsSalud</b></div>
+    </div>
+    <aside class="brief-route" aria-label="Resumen del recorrido">
+      <span>Del dato a una autorización</span>
+      <div><b>Capacidad</b><i></i><b>Solicitud</b><i></i><b>Propuesta</b><i></i><b>Constancia</b></div>
+    </aside>
+  </section>
+
+  <section class="demo-accesses" aria-labelledby="access-title">
+    <header><div><h2 id="access-title">Inicie la demostración</h2><p>Elija la perspectiva que desea presentar.</p></div><span>Las sesiones se mantienen por pestaña.</span></header>
+    <div class="demo-access-grid">
+      <article class="demo-access-card worker">
+        <div class="access-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"></circle><path d="M5 20c.8-4 3-6 7-6s6.2 2 7 6"></path></svg></div>
+        <div class="access-copy"><p>Recorrido recomendado</p><h3>Trabajador</h3><strong>Andrea Salazar</strong><span>Consulta capacidad e inicia una solicitud de préstamo.</span></div>
+        <button (click)="access.emit('trabajador')">Entrar como Andrea <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9m-4-4 4 4-4 4"></path></svg></button>
+      </article>
+      <article class="demo-access-card bank">
+        <div class="access-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V7l7-4 7 4v13M8 10h2m4 0h2m-8 4h2m4 0h2"></path></svg></div>
+        <div class="access-copy"><p>Operación crediticia</p><h3>Banco</h3><strong>Analista BCP</strong><span>Revisa solicitudes y registra propuestas crediticias.</span></div>
+        <button (click)="access.emit('analista')">Entrar como Analista <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9m-4-4 4 4-4 4"></path></svg></button>
+      </article>
+      <article class="demo-access-card admin">
+        <div class="access-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="1"></rect><path d="M8 3v4m8-4v4M8 11h8m-8 4h5"></path></svg></div>
+        <div class="access-copy"><p>Control operativo</p><h3>Administración EsSalud</h3><strong>Períodos y trazabilidad</strong><span>Gestiona parámetros, préstamos y auditoría.</span></div>
+        <button (click)="access.emit('admin')">Entrar como Administrador <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9m-4-4 4 4-4 4"></path></svg></button>
+      </article>
+      <article class="demo-access-card sap">
+        <div class="access-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 8h8m-8 4h8m-8 4h5"></path></svg></div>
+        <div class="access-copy"><p>Origen de planilla</p><h3>SAP Web</h3><strong>Consulta de personal</strong><span>Consulta planilla, descuentos y capacidad.</span></div>
+        <button (click)="access.emit('sap')">Entrar a SAP Web <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9m-4-4 4 4-4 4"></path></svg></button>
+      </article>
+    </div>
+  </section>
+
+  <section class="demo-flow" aria-labelledby="flow-title">
+    <header><div><h2 id="flow-title">Un recorrido, seis decisiones claras</h2><p>La propuesta ordena el proceso sin trasladar la evaluación crediticia a EsSalud.</p></div><span>Flujo principal</span></header>
+    <ol>
+      <li><b>01</b><div><strong>Consulta</strong><span>Capacidad oficial</span></div></li>
+      <li><b>02</b><div><strong>Solicitud</strong><span>Dirigida al banco</span></div></li>
+      <li><b>03</b><div><strong>Evaluación</strong><span>Trabajo bancario</span></div></li>
+      <li><b>04</b><div><strong>Propuesta</strong><span>Condiciones del banco</span></div></li>
+      <li><b>05</b><div><strong>Validación</strong><span>Revisión EsSalud</span></div></li>
+      <li><b>06</b><div><strong>Autorización</strong><span>Constancia verificable</span></div></li>
+    </ol>
+  </section>
+
+  <div class="demo-lower">
+    <section class="demo-cases" aria-labelledby="cases-title"><header><h2 id="cases-title">Escenarios disponibles</h2><p>Casos para ampliar la conversación durante la presentación.</p></header><div><article><strong>Andrea</strong><span>Caso principal</span><p>Sin préstamo vigente y capacidad favorable.</p></article><article><strong>Bruno</strong><span>Préstamo vigente</span><p>Permite demostrar restricción de NUEVO.</p></article><article><strong>Diego</strong><span>Validación negativa</span><p>Propuesta incompatible con capacidad.</p></article></div></section>
+    <section class="demo-value" aria-labelledby="value-title"><h2 id="value-title">Qué demuestra la propuesta</h2><ul><li>El trabajador conoce su capacidad.</li><li>Se eliminan consultas manuales masivas.</li><li>El banco trabaja con información verificable.</li><li>EsSalud obtiene trazabilidad y control.</li></ul></section>
+  </div>
+
+  <footer class="demo-help">Operación de demo: para restaurar escenarios, ejecute <code>npm run demo:reset</code>.</footer>
+</main>

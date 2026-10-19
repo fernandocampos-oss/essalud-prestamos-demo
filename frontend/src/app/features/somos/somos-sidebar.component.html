@@ -1,0 +1,78 @@
+<aside class="somos-sidebar">
+  <section class="worker-card">
+    <p>Bienvenido</p>
+    <img
+      class="worker-avatar"
+      src="assets/somos/portal/avatar.png"
+      alt="Avatar genérico"
+    />
+    <strong>{{ user?.name }}</strong>
+    <span>{{ email }}</span>
+    <div class="profile-tools" aria-label="Opciones de perfil">
+      <button aria-label="Cambiar contraseña">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M17 8h-1V6a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v10h14V10a2 2 0 0 0-2-2Zm-7-2a2 2 0 0 1 4 0v2h-4V6Zm3 10.7V18h-2v-1.3a2 2 0 1 1 2 0Z"
+          ></path>
+        </svg></button
+      ><button aria-label="Editar perfil">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="m4 16.7 9.9-9.9 3.3 3.3-9.9 9.9H4v-3.3ZM15.3 5.4l1.4-1.4a1.5 1.5 0 0 1 2.1 0l1.2 1.2a1.5 1.5 0 0 1 0 2.1l-1.4 1.4-3.3-3.3Z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </section>
+  <nav aria-label="Servicios SOMOS">
+    <button class="menu-item">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M4 7h16v11H4V7Zm2 3h4v4H6v-4Zm6 0h6v2h-6v-2Zm0 4h6v2h-6v-2ZM7 3h2v2H7V3Zm8 0h2v2h-2V3Z"
+        ></path></svg
+      ><span>Cronograma de Pagos</span>
+    </button>
+    <button class="menu-item">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M7 2h10v3h2v17H5V5h2V2Zm2 3h6V4H9v1Zm-2 3v12h10V8H7Zm2 2h2v2H9v-2Zm4 0h2v2h-2v-2Zm-4 4h2v2H9v-2Zm4 0h2v2h-2v-2Z"
+        ></path></svg
+      ><span>Mis Marcaciones</span>
+    </button>
+    <button class="menu-item">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M3 5h18v14H3V5Zm2 3v2h14V8H5Zm0 4v5h6v-5H5Zm8 0h6v2h-6v-2Zm0 3h6v2h-6v-2Z"
+        ></path></svg
+      ><span>Mis Boletas de Pago</span>
+    </button>
+    <button class="menu-item loans-link" (click)="navigate.emit('/prestamos')">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M4 6h16v13H4V6Zm2 3v2h12V9H6Zm0 4v4h5v-4H6Zm7 0h5v2h-5v-2Z"
+        ></path></svg
+      ><span>Préstamos por convenio</span><b>NUEVO</b>
+    </button>
+    <button class="menu-item">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M5 3h14v18H5V3Zm3 4v2h8V7H8Zm0 4v2h8v-2H8Zm0 4v2h5v-2H8Z"
+        ></path></svg
+      ><span>Gestión del Rendimiento</span>
+    </button>
+    <button class="menu-item">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M5 3h11v3h3v15H5V3Zm2 2v14h10V8h-3V5H7Zm2 4h6v2H9V9Zm0 4h6v2H9v-2Z"
+        ></path></svg
+      ><span>PIGRH - Plataforma Integral de Gestión del Recurso Humano</span>
+    </button>
+    <button class="menu-item">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M4 12a5 5 0 0 1 5-5h3V5l4 3-4 3V9H9a3 3 0 1 0 0 6h2v-2l4 3-4 3v-2H9a5 5 0 0 1-5-5Z"
+        ></path></svg
+      ><span>Más servicios</span>
+    </button>
+  </nav>
+</aside>

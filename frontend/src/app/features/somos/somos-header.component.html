@@ -1,0 +1,27 @@
+<header class="somos-real-header">
+  <button class="menu-toggle" aria-label="Abrir menú">
+    <i></i><i></i><i></i>
+  </button>
+  <img
+    class="somos-real-logo"
+    src="assets/somos/portal/logoMenu.svg"
+    alt="SOMOS EsSalud"
+  />
+  <div class="header-spacer"></div>
+  <time datetime="2026-10-17">Sábado, 17 de octubre de 2026</time>
+  <div class="user-control">
+    <button
+      class="header-avatar"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen"
+      [attr.aria-label]="'Abrir menú de ' + user?.name"
+    >
+      {{ initials }}
+    </button>
+    <div class="user-menu" *ngIf="menuOpen">
+      <strong>{{ user?.name }}</strong>
+      <span>{{ user?.username }}&#64;essalud.demo</span>
+      <button (click)="signOut.emit()">Cerrar sesión</button>
+    </div>
+  </div>
+</header>

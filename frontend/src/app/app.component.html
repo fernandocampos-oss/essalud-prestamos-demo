@@ -1,0 +1,230 @@
+<ng-container *ngIf="path()==='/'&&demoMode()">
+  <app-demo-home (access)="demo($event)"></app-demo-home>
+</ng-container>
+
+<ng-container *ngIf="path()==='/login'">
+  <main class="auth-page"><section class="auth-card"><p class="eyebrow">DEMO EJECUTIVA</p><h1>Préstamos por convenio</h1><p>Acceso demostrativo con sesiones independientes por pestaña.</p><label>Usuario<input [(ngModel)]="username" autocomplete="username"></label><label>Contraseña<input [(ngModel)]="password" type="password" autocomplete="current-password"></label><button class="primary" (click)="login()">Ingresar</button><a *ngIf="demoMode()" (click)="nav('/demo/access')">Acceso rápido de demostración</a><p class="muted">Datos y credenciales completamente ficticios.</p></section></main>
+</ng-container>
+
+<ng-container *ngIf="path()==='/demo/access'&&demoMode()">
+  <main class="auth-page"><section class="access-card"><p class="eyebrow">HERRAMIENTA DE EXPOSICIÓN</p><h1>Acceso rápido</h1><p>Autentica cuentas reales de la base demo. Cada pestaña conserva su sesión.</p><div class="access-grid"><button (click)="demo('trabajador')">Trabajadora EsSalud<br><small>Andrea Salazar</small></button><button (click)="demo('vigente')">Préstamo vigente<br><small>Bruno Cárdenas</small></button><button (click)="demo('admin')">Administración EsSalud</button><button (click)="demo('analista')">Analista BCP</button><button (click)="demo('adminBanco')">Administración BCP</button><button (click)="demo('otroBanco')">Analista BBVA Perú</button><button (click)="demo('interbank')">Analista Interbank</button><button (click)="demo('sap')">Operador SAP Web</button></div><a (click)="nav('/login')">Volver al inicio de sesión</a></section></main>
+</ng-container>
+
+<ng-container *ngIf="path()==='/somos/login'">
+  <main class="somos-login-page">
+    <section class="somos-reference-card" aria-label="Ingreso a SOMOS">
+      <img class="somos-reference-logo" src="assets/somos/LogoSomosEssalud.png" alt="SOMOS EsSalud">
+      <form class="somos-reference-form" (ngSubmit)="somosLogin()">
+        <label class="somos-material-field" [class.has-value]="somosDocument" [class.is-active]="somosDocumentFocused" [class.is-invalid]="somosInvalid('document')">
+          <span>Documento de identidad</span>
+          <div>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.01-8 4.5V21h16v-2.5c0-2.49-3.58-4.5-8-4.5Z"></path></svg>
+            <input [(ngModel)]="somosDocument" name="somosDocument" autocomplete="username" placeholder=" " aria-label="Documento de identidad" (focus)="somosDocumentFocused=true" (blur)="somosDocumentTouched=true;somosDocumentFocused=false">
+          </div>
+          <span class="somos-field-error" *ngIf="somosInvalid('document')">El usuario es obligatorio</span>
+        </label>
+        <label class="somos-material-field" [class.has-value]="somosPassword" [class.is-active]="somosPasswordFocused" [class.is-invalid]="somosInvalid('password')">
+          <span>Contraseña</span>
+          <div>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 8h-1V6a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2Zm-7-2a2 2 0 1 1 4 0v2h-4V6Zm3 10.73V19h-2v-2.27A2 2 0 1 1 13 16.73Z"></path></svg>
+            <input [(ngModel)]="somosPassword" name="somosPassword" [type]="somosPasswordVisible ? 'text' : 'password'" autocomplete="current-password" placeholder=" " aria-label="Contraseña" (focus)="somosPasswordFocused=true" (blur)="somosPasswordTouched=true;somosPasswordFocused=false">
+            <button class="somos-password-toggle" type="button" (click)="toggleSomosPassword()" [attr.aria-label]="somosPasswordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-5.2 0-9.27 4.09-10 7 .73 2.91 4.8 7 10 7s9.27-4.09 10-7c-.73-2.91-4.8-7-10-7Zm0 11.5A4.5 4.5 0 1 1 12 7a4.5 4.5 0 0 1 0 9.5Zm0-2A2.5 2.5 0 1 0 12 9a2.5 2.5 0 0 0 0 5.5Z" *ngIf="somosPasswordVisible"></path><path d="m3.27 2 18.28 18.28-1.41 1.41-2.27-2.27A10.95 10.95 0 0 1 12 21C6.8 21 2.73 16.91 2 14c.31-1.24 1.23-2.93 2.65-4.36L1.86 6.86 3.27 5.45V2Zm5.56 5.56A4.5 4.5 0 0 1 15.96 14.7l-1.72-1.72a2.5 2.5 0 0 0-3.22-3.22L8.83 7.56ZM12 7c5.2 0 9.27 4.09 10 7-.21.83-.84 2.07-1.88 3.28l-1.43-1.43c.65-.77 1.12-1.49 1.31-2.13C19.47 11.61 16.02 9 12 9c-.49 0-.97.04-1.43.12L8.88 7.43A11.1 11.1 0 0 1 12 7Z" *ngIf="!somosPasswordVisible"></path></svg>
+            </button>
+          </div>
+          <span class="somos-field-error" *ngIf="somosInvalid('password')">La contraseña es obligatoria</span>
+        </label>
+        <button class="somos-reference-submit" type="submit" [disabled]="loading()">Ingresar</button>
+      </form>
+      <button class="somos-reference-link" type="button" (click)="showSomosNotice('recovery')">¿Olvidaste tu contraseña?</button>
+      <div class="somos-reference-register">
+        <p>¿Aún no tienes una cuenta?</p>
+        <button type="button" (click)="showSomosNotice('registration')">Regístrate</button>
+      </div>
+      <button *ngIf="demoMode()&&session.user()?.role==='TRABAJADOR'" class="somos-demo-continue" type="button" (click)="somosLogin()">Continuar como Andrea</button>
+      <p *ngIf="somosNotice" class="somos-reference-notice" role="status">{{somosNotice}}</p>
+      <p class="somos-reference-contact">Consultas: soporte.somos&#64;essalud.demo</p>
+      <p class="somos-reference-disclaimer">Entorno de demostración ficticio. No ingreses credenciales institucionales.</p>
+    </section>
+  </main>
+</ng-container>
+
+<ng-container *ngIf="path()==='/somos/portal'">
+  <app-somos-dashboard [user]="session.user()" (navigate)="nav($event)" (signOut)="logout()"></app-somos-dashboard>
+</ng-container>
+
+<ng-container *ngIf="path()!=='/'&&path()!=='/login'&&path()!=='/demo/access'&&path()!=='/somos'&&path()!=='/somos/login'&&path()!=='/somos/portal'">
+  <header class="app-header" [class.loan-worker-header]="session.user()?.role==='TRABAJADOR'&&path().startsWith('/prestamos')" [class.loan-public-header]="isPublicVerification()"><a class="brand" (click)="nav(isPublicVerification()?'/':'/prestamos')"><ng-container *ngIf="session.user()?.role==='TRABAJADOR'&&path().startsWith('/prestamos');else publicOrStandardBrand"><img class="loan-institutional-logo" src="assets/essalud/essalud-logo.jpg" alt="EsSalud"><span class="loan-product-name"><strong>Préstamos por convenio</strong><small>Autoservicio del trabajador</small></span></ng-container><ng-template #publicOrStandardBrand><ng-container *ngIf="isPublicVerification();else standardBrand"><img class="loan-institutional-logo" src="assets/essalud/essalud-logo.jpg" alt="EsSalud"><span class="loan-product-name"><strong>Préstamos por convenio</strong><small>Verificación de constancias</small></span></ng-container></ng-template><ng-template #standardBrand>EsSalud <span>Préstamos por convenio</span></ng-template></a><nav *ngIf="session.user()"><a *ngIf="session.user()?.role==='TRABAJADOR'" [class.active]="path()==='/prestamos'" (click)="nav('/prestamos')">Mi capacidad</a><a *ngIf="session.user()?.role==='TRABAJADOR'" [class.active]="path().startsWith('/prestamos/mis-solicitudes')" (click)="nav('/prestamos/mis-solicitudes')">Mis solicitudes</a><a *ngIf="session.user()?.role?.includes('BANCO')" (click)="nav('/prestamos/banco')">Portal Banco</a><a *ngIf="session.user()?.role==='ADMIN_ESSALUD'" (click)="nav('/prestamos/admin')">Administración</a><a *ngIf="['CONSULTA_PLANILLA','ADMIN_ESSALUD','OPERADOR_ESSALUD'].includes(session.user()?.role||'')" (click)="nav('/sap-web')">SAP Web</a></nav><div><span class="loan-demo-badge" *ngIf="(session.user()?.role==='TRABAJADOR'&&path().startsWith('/prestamos'))||isPublicVerification()">Entorno de demostración</span><span class="user" *ngIf="session.user()">{{session.user()?.name}}</span><button class="quiet" *ngIf="session.user()" (click)="logout()">Salir</button></div></header>
+  <main class="container" [class.loan-worker-container]="session.user()?.role==='TRABAJADOR'&&path().startsWith('/prestamos')">
+    <div class="alert error" *ngIf="error()">{{error()}}</div>
+    <div class="alert success loan-worker-notice" *ngIf="notice()" role="status"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.2 4.2L19 6.7"></path></svg><span>{{notice()}}</span><button type="button" (click)="clearNotice()" aria-label="Cerrar notificación">×</button></div>
+    <div class="loading" *ngIf="loading()">Procesando información…</div>
+
+    <section *ngIf="path()==='/dev/ui'" class="page"><p class="eyebrow">CATÁLOGO</p><h1>Design system</h1><div class="grid three"><article class="card"><h2>Botones</h2><button class="primary">Principal</button> <button class="secondary">Secundario</button> <button class="danger">Destructivo</button></article><article class="card"><h2>Estados</h2><span class="badge good">AUTORIZADA</span> <span class="badge warn">EN EVALUACIÓN</span> <span class="badge bad">RECHAZADA</span></article><article class="card"><h2>Formulario</h2><label>Campo de ejemplo<input value="Valor demostrativo"></label></article></div><article class="card"><h2>Tabla y alertas</h2><div class="alert info">Información trazable y de acceso mínimo.</div><table><thead><tr><th>Estado</th><th>Período</th><th>Acción</th></tr></thead><tbody><tr><td><span class="badge good">ABIERTO</span></td><td>Octubre 2026</td><td><button class="secondary">Consultar</button></td></tr></tbody></table></article></section>
+
+    <section *ngIf="path()==='/prestamos'&&data()" class="loan-worker-page">
+      <header class="loan-overview-heading">
+        <div>
+          <p class="loan-kicker">Préstamos por convenio</p>
+          <h1>Consulta de capacidad para préstamos por convenio</h1>
+          <p>Consulte el importe mensual disponible para el pago de cuotas. La aprobación del préstamo depende de la evaluación de la entidad financiera.</p>
+        </div>
+      </header>
+
+      <div class="loan-period-notice" *ngIf="!data().capacity.allowsNewRequests">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v4m0 4h.01M10.3 3.5 2.9 16.3a2 2 0 0 0 1.73 3h14.74a2 2 0 0 0 1.73-3L13.7 3.5a2 2 0 0 0-3.4 0Z"></path></svg>
+        <span>El período no permite nuevas solicitudes. La consulta de capacidad permanece disponible.</span>
+      </div>
+
+      <section class="loan-capacity-panel" aria-label="Resumen de disponibilidad mensual">
+        <div class="loan-capacity-main">
+          <span>Cuota mensual disponible</span>
+          <strong>{{money(data().capacity.availableCentimos)}}</strong>
+          <small>Importe mensual disponible para una posible cuota. No corresponde al monto total del préstamo.</small>
+        </div>
+        <div class="loan-capacity-support">
+          <dl class="loan-capacity-facts">
+          <div>
+            <dt>Período de consulta</dt>
+            <dd>{{data().capacity.period.label}}</dd>
+            <span class="loan-period-status" *ngIf="data().capacity.allowsNewRequests">Solicitudes habilitadas</span>
+            <span class="loan-period-status is-restricted" *ngIf="!data().capacity.allowsNewRequests">Solicitudes no habilitadas</span>
+          </div>
+          <div>
+            <dt>Disponibilidad</dt>
+            <dd *ngIf="!data().activeLoan">No registra préstamos vigentes</dd>
+            <dd *ngIf="data().activeLoan">Préstamo vigente registrado</dd>
+            <small>La evaluación final corresponde a la entidad financiera.</small>
+          </div>
+          </dl>
+          <div class="loan-capacity-action">
+            <div><ng-container *ngIf="data().capacity.allowsNewRequests&&!data().activeRequest"><p>Puede registrar una solicitud para evaluación de una entidad financiera.</p><button class="loan-primary-action" (click)="nav('/prestamos/solicitudes/nueva')">Iniciar solicitud</button></ng-container><ng-container *ngIf="data().activeRequest"><p>Registra una solicitud en curso. Mientras permanezca activa, no puede registrar otra incompatible.</p><button class="loan-secondary-action" (click)="nav('/prestamos/mis-solicitudes')">Ver mi solicitud</button></ng-container><p *ngIf="!data().capacity.allowsNewRequests">En este período no se pueden registrar nuevas solicitudes. Puede consultar su capacidad y sus solicitudes vigentes.</p></div>
+            <button class="loan-capacity-certificate" (click)="downloadCapacityCertificate()" [disabled]="loading()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2M7 3h10"></path></svg>Descargar constancia de capacidad</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="loan-action-layout">
+        <article class="loan-action-panel">
+          <div class="loan-panel-heading">
+            <span class="loan-panel-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V10m5 10V4m5 16v-7m5 7V8"></path></svg></span>
+            <div><p>Operaciones disponibles</p><h2>Opciones para su solicitud</h2></div>
+          </div>
+          <p class="loan-action-copy" *ngIf="data().activeLoan">Registra un préstamo vigente. Las operaciones disponibles se muestran según las condiciones aplicables.</p>
+          <p class="loan-action-copy" *ngIf="!data().activeLoan">No registra préstamos vigentes. Puede iniciar una solicitud de préstamo nuevo, sujeta a evaluación de la entidad financiera.</p>
+          <div class="loan-type-list"><span *ngFor="let type of data().allowedTypes" class="loan-type">{{operationLabel(type)}}</span></div>
+          <div class="loan-action-footer">
+            <span>Una solicitud activa restringe el registro de otra solicitud incompatible.</span>
+          </div>
+        </article>
+        <aside class="loan-flow-panel">
+          <h2>Etapas de la solicitud</h2>
+          <ol>
+            <li>Registro de solicitud</li>
+            <li>Evaluación de la entidad financiera</li>
+            <li>Revisión de propuesta</li>
+            <li>Validación y autorización</li>
+          </ol>
+          <p class="loan-flow-note">La consulta de capacidad no registra una solicitud ni restringe su disponibilidad.</p>
+        </aside>
+      </section>
+    </section>
+
+    <section *ngIf="path()==='/prestamos/solicitudes/nueva'" class="page loan-worker-page loan-form-page">
+      <header class="loan-form-heading">
+        <p class="loan-kicker">Nueva solicitud</p>
+        <h1>Solicitud de préstamo por convenio</h1>
+        <p>Seleccione el tipo de operación y la entidad financiera que evaluará su solicitud. El registro no constituye la aprobación de un préstamo.</p>
+      </header>
+      <article class="loan-form-state" *ngIf="requestFormLoading()" aria-live="polite"><h2>Consultando información de la solicitud</h2><p>Estamos verificando su capacidad mensual y las entidades financieras disponibles.</p></article>
+      <article class="loan-form-state loan-form-state-error" *ngIf="requestFormError()" role="alert"><h2>No se pudo cargar la solicitud</h2><p>{{requestFormError()}}</p><button class="loan-secondary-action" (click)="loadRequestForm()">Reintentar consulta</button></article>
+      <div class="loan-form-layout" *ngIf="data()&&!requestFormLoading()&&!requestFormError()">
+        <div class="loan-form-main">
+          <article class="loan-entry-restricted" *ngIf="data().activeRequest"><h2>Ya registra una solicitud activa</h2><p>Debe concluirla o cancelarla antes de registrar otra solicitud incompatible.</p><button class="loan-secondary-action" (click)="nav('/prestamos/mis-solicitudes')">Ver mis solicitudes</button></article>
+          <article class="loan-entry-restricted" *ngIf="!data().activeRequest&&!data().capacity.allowsNewRequests"><h2>Registro de solicitudes no disponible</h2><p>El período actual no permite registrar nuevas solicitudes. La consulta de capacidad continúa disponible.</p><button class="loan-secondary-action" (click)="nav('/prestamos')">Volver a mi capacidad</button></article>
+          <article class="loan-form-card" *ngIf="!data().activeRequest&&data().capacity.allowsNewRequests">
+            <div class="loan-form-fields">
+              <label>Tipo de solicitud<span class="loan-select-wrap"><select [(ngModel)]="requestType"><option *ngFor="let type of data().allowedTypes" [value]="type">{{operationLabel(type)}}</option></select><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m5.5 7.5 4.5 4.5 4.5-4.5"></path></svg></span></label>
+              <label>Entidad financiera<span class="loan-select-wrap"><select [(ngModel)]="selectedBank" (ngModelChange)="error.set('')" [attr.aria-invalid]="requestFormSubmitted&&!selectedBank" [attr.aria-describedby]="requestFormSubmitted&&!selectedBank?'bank-selection-error':null"><option value="" disabled>Seleccione una entidad financiera</option><option *ngFor="let bank of data().items" [value]="bank.id">{{bank.name}}</option></select><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m5.5 7.5 4.5 4.5 4.5-4.5"></path></svg></span><small id="bank-selection-error" class="loan-field-error" *ngIf="requestFormSubmitted&&!selectedBank">Seleccione una entidad financiera para continuar.</small></label>
+            </div>
+            <div class="alert warn loan-exclusivity-alert"><strong>Importante</strong><span>Al registrar esta solicitud, no podrá presentar otra ante una entidad financiera diferente mientras la solicitud permanezca activa.</span></div>
+            <button class="primary loan-submit-button" (click)="createRequest()" [disabled]="loading()">{{loading()?'Registrando solicitud…':'Registrar solicitud'}}</button>
+          </article>
+        </div>
+        <aside class="loan-information-panel" aria-label="Resumen de capacidad y evaluación bancaria">
+          <section class="loan-capacity-summary">
+            <h2>Tu capacidad disponible</h2>
+            <span>Cuota mensual disponible</span>
+            <strong>{{money(data().capacity.availableCentimos)}}</strong>
+            <dl><div><dt>Período de consulta</dt><dd>{{data().capacity.period.label}}</dd></div></dl>
+            <p class="loan-availability-status" [class.is-restricted]="!data().capacity.allowsNewRequests">{{data().capacity.allowsNewRequests ? 'Solicitudes habilitadas' : 'Solicitudes no habilitadas'}}</p>
+            <p class="loan-capacity-context" *ngIf="data().capacity.availableCentimos<=0">No registra capacidad mensual disponible para este período.</p>
+            <p class="loan-capacity-context" *ngIf="data().activeLoan">Registra un préstamo vigente. Las operaciones disponibles se muestran según las condiciones aplicables.</p>
+            <p class="loan-capacity-context" *ngIf="!data().capacity.allowsNewRequests">El período actual no permite registrar nuevas solicitudes.</p>
+            <small>Este importe es referencial para cuotas mensuales; no corresponde al monto total del préstamo ni implica una aprobación.</small>
+          </section>
+          <section class="loan-bank-evaluation">
+            <h2>Evaluación bancaria</h2>
+            <p>La entidad financiera evaluará su solicitud y, de corresponder, presentará una propuesta con las condiciones del préstamo.</p>
+            <small>La entidad financiera determina monto, plazo, tasa y cuota. EsSalud valida la capacidad aplicable.</small>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <section *ngIf="path()==='/prestamos/mis-solicitudes'&&data()" class="loan-worker-page loan-requests-page">
+      <header class="loan-overview-heading"><div><p class="loan-kicker">Mis solicitudes</p><h1>Seguimiento de solicitudes</h1><p>Consulte el estado de la evaluación y las acciones disponibles para cada solicitud.</p></div><button class="loan-text-action" (click)="nav('/prestamos')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>Consultar mi capacidad</button></header>
+      <article class="loan-empty-state" *ngIf="!data().items.length"><span class="loan-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.5h7l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 20V5a1.5 1.5 0 0 1 1.5-1.5ZM14 3.5V8h4M9 13h6m-6 3h4"></path></svg></span><div><h2>No registra solicitudes</h2><p>Cuando registre una solicitud, aquí podrá consultar su evaluación, propuesta y autorización.</p></div></article>
+      <article class="loan-request-card" *ngFor="let r of data().items">
+        <header class="loan-request-card-header"><div><span class="badge" [class]="'badge '+badge(r.status)">{{workerStatusLabel(r.status)}}</span><h2>{{operationLabel(r.type)}}</h2><p>{{r.bankName}}</p></div></header>
+        <dl class="loan-request-facts"><div><dt>Período</dt><dd>{{r.periodLabel||r.period_id}}</dd></div><div><dt>Capacidad mensual registrada</dt><dd>{{money(r.assessment_centimos)}}</dd></div><div><dt>Registro</dt><dd>{{r.created_at|date:'dd/MM/yyyy'}}</dd></div></dl>
+        <p class="loan-request-reason" *ngIf="r.reason">{{r.reason}}</p>
+        <div class="loan-request-callout" *ngIf="r.proposal?.status==='EMITIDA'"><strong>Propuesta recibida</strong><span>Revise las condiciones registradas por la entidad financiera antes de responder.</span></div>
+        <footer class="loan-request-actions"><button class="secondary" (click)="nav('/prestamos/mis-solicitudes/'+r.id)">{{r.status==='AUTORIZADA'?'Ver autorización':r.proposal?.status==='EMITIDA'?'Revisar propuesta':'Ver detalle'}}</button><button class="secondary" *ngIf="['CREADA','EN_EVALUACION_BANCO','PROPUESTA_EMITIDA'].includes(r.status)" (click)="requestCancellation(r)">Cancelar solicitud</button><button class="primary" *ngIf="certificateAvailable(r)" (click)="downloadCertificate(r)">Descargar constancia PDF</button></footer>
+      </article>
+    </section>
+
+    <section *ngIf="path().startsWith('/prestamos/mis-solicitudes/')&&data()?.request" class="loan-worker-page loan-request-detail-page">
+      <header class="loan-detail-heading"><button class="loan-text-action" (click)="nav('/prestamos/mis-solicitudes')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"></path></svg>Volver a Mis solicitudes</button><div><p class="loan-kicker">Solicitud de evaluación</p><h1>{{operationLabel(data().request.type)}}</h1><p>{{data().request.bankName}}</p></div><span class="badge" [class]="'badge '+badge(data().request.status)">{{workerStatusLabel(data().request.status)}}</span></header>
+      <section class="loan-detail-layout"><article class="loan-detail-card"><h2>Información de la solicitud</h2><dl><dt>Fecha de registro</dt><dd>{{data().request.created_at|date:'mediumDate'}}</dd><dt>Entidad financiera</dt><dd>{{data().request.bankName}}</dd><dt>Período</dt><dd>{{data().request.periodLabel||data().request.period_id}}</dd><dt>Capacidad mensual registrada</dt><dd>{{money(data().request.assessment_centimos)}}</dd></dl><p *ngIf="data().request.reason" class="loan-request-reason">{{data().request.reason}}</p><div class="loan-detail-actions"><button class="secondary" *ngIf="['CREADA','EN_EVALUACION_BANCO','PROPUESTA_EMITIDA'].includes(data().request.status)" (click)="requestCancellation(data().request)">Cancelar solicitud</button></div></article>
+        <aside class="loan-history-card" *ngIf="data().history?.length"><h2>Historial</h2><ol><li *ngFor="let item of data().history"><strong>{{historyLabel(item.action)}}</strong><span>{{item.created_at|date:'dd/MM/yyyy'}}</span></li></ol></aside></section>
+      <article class="loan-proposal-card" *ngIf="data().request.proposal"><header><div><p class="loan-kicker">Propuesta de la entidad financiera</p><h2>Condiciones registradas</h2></div><span class="badge" [class]="'badge '+badge(data().request.proposal.status)">{{label(data().request.proposal.status)}}</span></header><dl><div><dt>Monto propuesto</dt><dd>{{money(data().request.proposal.amount_centimos)}}</dd></div><div><dt>Plazo</dt><dd>{{data().request.proposal.term_months}} meses</dd></div><div><dt>Tasa de interés anual</dt><dd>{{data().request.proposal.annual_rate}}%</dd></div><div><dt>Cuota mensual</dt><dd>{{money(data().request.proposal.payment_centimos)}}</dd></div></dl><p *ngIf="data().request.proposal.notes">{{data().request.proposal.notes}}</p><footer *ngIf="data().request.proposal.status==='EMITIDA'"><button class="secondary" (click)="respond(data().request,'RECHAZAR')">Rechazar propuesta</button><button class="primary" (click)="respond(data().request,'ACEPTAR')">Aceptar propuesta</button></footer></article>
+      <article class="loan-authorization-card" *ngIf="certificateAvailable(data().request)"><div><p class="loan-kicker">Autorización disponible</p><h2>Operación autorizada</h2><p>La autorización se generó después de la validación final. Puede descargar la constancia o verificar su estado en línea.</p><span class="loan-verification-code">{{data().request.authorization.public_code}}</span></div><div class="loan-authorization-actions"><button class="primary" (click)="downloadCertificate(data().request)">Descargar constancia PDF</button><button class="secondary" (click)="nav('/prestamos/verificar/'+data().request.authorization.public_code)">Verificar constancia</button></div></article>
+    </section>
+
+    <section *ngIf="path()==='/prestamos/mis-constancias'&&data()" class="loan-worker-page loan-certificates-page"><header class="loan-overview-heading"><div><p class="loan-kicker">Mis constancias</p><h1>Autorizaciones disponibles</h1><p>Consulte las constancias generadas para sus operaciones autorizadas.</p></div></header><article class="loan-request-card" *ngFor="let c of data().items"><div><span class="badge" [class]="'badge '+badge(c.status)">{{label(c.status)}}</span><h2>{{c.bank_name}} · {{operationLabel(c.type)}}</h2><p>Emitida {{c.issued_at|date:'mediumDate'}}</p></div><div class="request-actions"><button class="secondary" (click)="nav('/prestamos/verificar/'+c.public_code)">Ver constancia</button></div></article><article class="loan-empty-state" *ngIf="!data().items.length"><div><h2>No registra constancias disponibles</h2><p>Las constancias se muestran cuando una operación ha sido autorizada.</p></div></article></section>
+
+    <section *ngIf="path()==='/prestamos/banco'&&data()" class="page"><div class="page-title"><div><p class="eyebrow">PORTAL BANCO</p><h1>Bandeja de solicitudes</h1><p>La bandeja está aislada por organización en el backend.</p></div><span class="badge good">{{data().items.length}} casos</span></div><article class="request card" *ngFor="let r of data().items"><div><span class="badge" [class]="'badge '+badge(r.status)">{{label(r.status)}}</span><h2>{{r.workerName}} <small>{{r.workerCode}}</small></h2><p>{{label(r.type)}} · Capacidad registrada {{money(r.assessment_centimos)}}</p><p *ngIf="r.assigned_to">Asignada a un analista</p></div><div class="request-actions"><button class="primary" *ngIf="r.status==='CREADA'" (click)="take(r)">Tomar solicitud</button><ng-container *ngIf="r.status==='EN_EVALUACION_BANCO'"><label>Importe<input type="number" [(ngModel)]="proposal.amount"></label><label>Meses<input type="number" [(ngModel)]="proposal.term"></label><label>Tasa %<input type="number" [(ngModel)]="proposal.rate"></label><label>Cuota<input type="number" [(ngModel)]="proposal.payment"></label><button class="primary" (click)="propose(r)">Emitir propuesta</button><button class="danger" (click)="reject(r)">Rechazar</button></ng-container></div></article></section>
+
+    <section *ngIf="path()==='/sap-web'&&data()" class="page"><p class="eyebrow">SAP WEB · ORIGEN DEMOSTRATIVO</p><h1>Consulta de personal y planilla</h1><article class="card"><label>Buscar trabajador<input [(ngModel)]="search" placeholder="Nombre o código" (keyup.enter)="workers()"></label><button class="primary" (click)="workers()">Buscar</button></article><table><thead><tr><th>Trabajador</th><th>Código</th><th>Grupo</th><th></th></tr></thead><tbody><tr *ngFor="let w of data().items"><td>{{w.name}}</td><td>{{w.code}}</td><td>{{w.group_name}}</td><td><button class="secondary" (click)="worker(w.id)">Consultar</button></td></tr></tbody></table></section>
+
+    <section *ngIf="path().startsWith('/sap-web/personal/')&&data()" class="page"><button class="back" (click)="nav('/sap-web')">Volver a búsqueda</button><p class="eyebrow">PLANILLA Y CAPACIDAD</p><h1>{{data().worker.name}}</h1><div class="grid three"><article class="metric"><p>Capacidad</p><strong>{{money(data().capacity.availableCentimos)}}</strong><small>{{data().capacity.ruleVersion}}</small></article><article class="metric"><p>Ingresos elegibles</p><strong>{{money(data().capacity.eligibleIncomeCentimos)}}</strong><small>{{data().period.label}}</small></article><article class="metric"><p>Préstamos vigentes</p><strong>{{data().loans.length}}</strong><small>Datos demostrativos</small></article></div><article class="card"><h2>Conceptos de planilla</h2><table><thead><tr><th>Concepto</th><th>Categoría</th><th>Monto</th></tr></thead><tbody><tr *ngFor="let c of data().snapshot.concepts"><td>{{c.name}}</td><td>{{c.category}}</td><td>{{money(c.amount_centimos)}}</td></tr></tbody></table></article></section>
+
+    <section *ngIf="path()==='/prestamos/admin'&&data()" class="page"><p class="eyebrow">ADMINISTRACIÓN ESSALUD</p><h1>Control operativo</h1><div class="grid four"><article class="metric"><p>Solicitudes activas</p><strong>{{data().activeRequests}}</strong></article><article class="metric"><p>Propuestas pendientes</p><strong>{{data().proposals}}</strong></article><article class="metric"><p>Autorizadas</p><strong>{{data().authorized}}</strong></article><article class="metric"><p>Préstamos finalizados</p><strong>{{data().finalizedLoans}}</strong></article></div><div class="grid two"><article class="card"><h2>Período operativo</h2><p>{{data().openPeriod?.label}} · {{label(data().openPeriod?.status)}}</p><button class="secondary" (click)="nav('/prestamos/admin/periodos')">Gestionar períodos</button></article><article class="card"><h2>Seguimiento y trazabilidad</h2><button class="secondary" (click)="nav('/prestamos/admin/operaciones')">Ver operaciones</button> <button class="secondary" (click)="nav('/prestamos/admin/audit')">Ver auditoría</button></article></div></section>
+
+    <section *ngIf="path()==='/prestamos/admin/periodos'&&data()" class="page"><p class="eyebrow">ADMINISTRACIÓN</p><h1>Períodos</h1><table><thead><tr><th>Período</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr *ngFor="let p of data().items"><td>{{p.label}}</td><td><span class="badge" [class]="'badge '+badge(p.status)">{{label(p.status)}}</span></td><td><button class="secondary" (click)="setPeriod(p,'ABIERTO')">Abrir</button> <button class="secondary" (click)="setPeriod(p,'RESTRINGIDO')">Restringir</button> <button class="danger" (click)="setPeriod(p,'CERRADO')">Cerrar</button></td></tr></tbody></table></section>
+
+    <section *ngIf="path()==='/prestamos/admin/parametros'&&data()" class="page"><p class="eyebrow">ADMINISTRACIÓN</p><h1>Parámetros versionados</h1><article class="card"><h2>Porcentaje base de capacidad</h2><p>Regla demostrativa; no representa una política institucional vigente.</p><label>Porcentaje<input type="number" [(ngModel)]="capacityValue" min="1" max="100"></label><button class="primary" (click)="setCapacity()">Guardar nueva versión</button></article></section>
+
+    <section *ngIf="path()==='/prestamos/admin/operaciones'&&data()" class="page"><p class="eyebrow">ADMINISTRACIÓN</p><h1>Operaciones y cierre</h1><article class="card"><h2>Préstamos</h2><table><thead><tr><th>Trabajador</th><th>Situación</th><th>Acción</th></tr></thead><tbody><tr *ngFor="let l of data().loans"><td>{{l.worker_name}}</td><td><span class="badge" [class]="'badge '+badge(l.status)">{{label(l.status)}}</span></td><td><button class="secondary" *ngIf="l.status==='VIGENTE'" (click)="finish(l)">Confirmar finalización</button></td></tr></tbody></table></article></section>
+
+    <section *ngIf="path()==='/prestamos/admin/audit'&&data()" class="page"><p class="eyebrow">ADMINISTRACIÓN</p><h1>Auditoría básica</h1><table><thead><tr><th>Fecha</th><th>Actor</th><th>Acción</th><th>Entidad</th></tr></thead><tbody><tr *ngFor="let a of data().items"><td>{{a.created_at|date:'short'}}</td><td>{{a.actor_name||'Verificador público'}}</td><td>{{label(a.action)}}</td><td>{{a.entity}}</td></tr></tbody></table></section>
+
+    <section *ngIf="isPublicVerification()&&verificationError()" class="loan-public-verification loan-verification-error" role="alert"><span class="loan-verification-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 8v4m0 4h.01M10.3 3.5 2.9 16.3a2 2 0 0 0 1.73 3h14.74a2 2 0 0 0 1.73-3L13.7 3.5a2 2 0 0 0-3.4 0Z"></path></svg></span><div><p class="loan-verification-kicker">Verificación de constancias</p><h1>No fue posible verificar la constancia</h1><p>{{verificationError()}}</p><button class="secondary" (click)="retryVerification()">Reintentar consulta</button></div></section>
+
+    <section *ngIf="isPublicVerification()&&data()" class="loan-public-verification">
+      <ng-container *ngIf="data().documentType==='CAPACIDAD_MENSUAL';else authorizationVerification">
+        <div class="loan-verification-intro"><div><p class="loan-verification-kicker">Verificación de constancias</p><h1>Constancia informativa de capacidad mensual</h1><p>La información mostrada corresponde a la capacidad mensual registrada al momento de emisión de la constancia.</p></div><span class="loan-verification-status" [class]="'loan-verification-status '+verificationTone(data().verification_status)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.2 4.2L19 6.7"></path></svg>{{verificationLabel(data().verification_status)}}</span></div>
+        <div class="loan-verification-layout">
+          <article class="loan-verification-primary"><p>Capacidad mensual registrada</p><strong>{{money(data().capacity_centimos)}}</strong><span>Importe referencial para la evaluación de cuotas mensuales.</span><dl><div><dt>Período de consulta</dt><dd>{{data().period_label}}</dd></div><div><dt>Vigencia demostrativa</dt><dd *ngIf="data().valid_until">Válida hasta el {{publicDate(data().valid_until)}}</dd><dd *ngIf="!data().valid_until">Vigencia no determinada</dd></div></dl><p class="loan-verification-note">Este documento es informativo y no constituye aprobación de crédito ni autorización de descuento por planilla.</p></article>
+          <aside class="loan-verification-record"><h2>Datos del registro</h2><dl><div><dt>Trabajador</dt><dd>{{data().worker_display}}</dd></div><div><dt>Documento</dt><dd>{{data().worker_code_masked}}</dd></div><div><dt>Fecha de emisión</dt><dd>{{publicDate(data().issued_at)}}</dd></div><div><dt>Código de constancia</dt><dd class="loan-code">{{data().public_code}}</dd></div><div><dt>Tipo de documento</dt><dd>Constancia informativa de capacidad</dd></div></dl><div class="loan-verification-qr"><img [src]="data().qrDataUrl" alt="Código QR de la URL de verificación"><span>Escanee el código QR para abrir esta misma verificación.</span></div></aside>
+        </div>
+        <p class="loan-verification-demo">Entorno de demostración. Esta verificación no corresponde a un servicio oficial de EsSalud.</p>
+      </ng-container>
+      <ng-template #authorizationVerification><div class="loan-verification-intro"><div><p class="loan-verification-kicker">Verificación de constancias</p><h1>Constancia de autorización</h1></div><span class="badge" [class]="'badge '+badge(data().status)">{{label(data().status)}}</span></div><article class="loan-authorization-verification"><dl><div><dt>Entidad financiera</dt><dd>{{data().bank_name}}</dd></div><div><dt>Tipo de operación</dt><dd>{{label(data().type)}}</dd></div><div><dt>Período</dt><dd>{{data().period_label}}</dd></div><div><dt>Fecha de emisión</dt><dd>{{publicDate(data().issued_at)}}</dd></div><div><dt>Vigencia</dt><dd>{{data().valid_until?publicDate(data().valid_until):'No determinada'}}</dd></div><div><dt>Código de constancia</dt><dd class="loan-code">{{data().public_code}}</dd></div></dl><img [src]="data().qrDataUrl" alt="Código QR de la URL de verificación"><p>La verificación pública no muestra identidad ni detalle de planilla del trabajador.</p></article><p class="loan-verification-demo">Entorno de demostración. Esta verificación no corresponde a un servicio oficial de EsSalud.</p></ng-template>
+    </section>
+    <div *ngIf="cancellationRequest" class="loan-dialog-backdrop" (click)="closeCancellation()">
+      <section class="loan-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="cancel-title" (click)="$event.stopPropagation()"><h2 id="cancel-title">¿Desea cancelar esta solicitud?</h2><p>Si confirma la cancelación, la entidad financiera dejará de procesar esta solicitud dentro del sistema de demostración.</p><div><button class="secondary" (click)="closeCancellation()">Volver</button><button class="danger" (click)="cancel()" [disabled]="loading()">Confirmar cancelación</button></div></section>
+    </div>
+  </main>
+</ng-container>

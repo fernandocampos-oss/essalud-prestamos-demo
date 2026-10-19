@@ -1,0 +1,12 @@
+<section class="somos-dashboard">
+  <app-somos-header [user]="user" (signOut)="signOut.emit()"></app-somos-header>
+  <div class="somos-dashboard-grid">
+    <app-somos-sidebar
+      [user]="user"
+      [email]="email"
+      (navigate)="navigate.emit($event)"
+    ></app-somos-sidebar>
+    <app-somos-news></app-somos-news>
+    <app-somos-rail></app-somos-rail>
+  </div>
+</section>

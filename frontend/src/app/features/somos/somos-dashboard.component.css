@@ -1,0 +1,47 @@
+.somos-dashboard {
+  background: #e6effa;
+  color: #151515;
+  min-height: 100vh;
+}
+.somos-dashboard-grid {
+  display: grid;
+  gap: 40px;
+  grid-template-columns: 350px minmax(500px, 1fr) 343px;
+  margin: 0;
+  min-height: calc(100vh - 64px);
+  padding: 10px 14px 24px 0;
+}
+.somos-dashboard-grid app-somos-sidebar {
+  margin-top: -10px;
+}
+@media (max-width: 1280px) {
+  .somos-dashboard-grid {
+    gap: 18px;
+    grid-template-columns: 290px minmax(440px, 1fr) 300px;
+    padding-right: 10px;
+  }
+}
+@media (max-width: 1080px) {
+  .somos-dashboard-grid {
+    grid-template-columns: 290px minmax(0, 1fr);
+    padding-left: 0;
+  }
+  app-somos-rail {
+    grid-column: 2;
+  }
+  .somos-dashboard-grid app-somos-sidebar {
+    grid-row: 1/3;
+  }
+}
+@media (max-width: 760px) {
+  .somos-dashboard-grid {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+  .somos-dashboard-grid app-somos-sidebar {
+    margin: 0;
+  }
+  app-somos-rail {
+    grid-column: auto;
+  }
+}

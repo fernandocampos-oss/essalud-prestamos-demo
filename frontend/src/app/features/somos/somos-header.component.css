@@ -1,0 +1,104 @@
+:host {
+  display: block;
+  position: relative;
+  z-index: 3;
+}
+.somos-real-header {
+  align-items: center;
+  background: #226bb2;
+  box-shadow: 0 2px 4px rgba(20, 58, 93, 0.34);
+  color: #fff;
+  display: flex;
+  height: 64px;
+  padding: 0 25px;
+}
+.menu-toggle {
+  background: transparent;
+  display: grid;
+  gap: 4px;
+  margin-right: 22px;
+  padding: 9px 0;
+  width: 22px;
+}
+.menu-toggle i {
+  background: #fff;
+  border-radius: 1px;
+  display: block;
+  height: 2px;
+  width: 20px;
+}
+.somos-real-logo {
+  display: block;
+  height: auto;
+  width: 240px;
+}
+.header-spacer {
+  flex: 1;
+}
+.somos-real-header time {
+  font-size: 15px;
+  font-weight: 500;
+  margin-right: 21px;
+  white-space: nowrap;
+}
+.user-control {
+  position: relative;
+}
+.header-avatar {
+  align-items: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-size: 15px;
+  font-weight: 500;
+  height: 40px;
+  justify-content: center;
+  padding: 0;
+  width: 40px;
+}
+.header-avatar:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.user-menu {
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(23, 46, 69, 0.24);
+  color: #31475b;
+  display: grid;
+  gap: 5px;
+  min-width: 210px;
+  padding: 14px;
+  position: absolute;
+  right: 0;
+  top: 48px;
+}
+.user-menu strong {
+  font-size: 13px;
+}
+.user-menu span {
+  color: #63788b;
+  font-size: 11px;
+}
+.user-menu button {
+  background: #f0f6fa;
+  color: #226bb2;
+  font-size: 12px;
+  margin-top: 5px;
+  text-align: left;
+}
+@media (max-width: 720px) {
+  .somos-real-header {
+    height: 58px;
+    padding: 0 16px;
+  }
+  .menu-toggle {
+    margin-right: 15px;
+  }
+  .somos-real-logo {
+    width: 160px;
+  }
+  .somos-real-header time {
+    display: none;
+  }
+}

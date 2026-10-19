@@ -1,0 +1,15 @@
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+database/*.sqlite*
+.env
+coverage/
+.local/
+*.log
+/.agents/
+/reference/
+/.tmp-*/
+/chrome-*/
+/*.png
+/*.zip

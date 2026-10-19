@@ -1,0 +1,31 @@
+{
+  "name": "essalud-prestamos-demo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "start": "node scripts/dev-start.cjs",
+    "dev:api": "node --watch backend/src/server.js",
+    "dev:web": "npm --workspace frontend run start",
+    "dev:status": "node scripts/dev-status.cjs",
+    "dev:stop": "node scripts/dev-stop.cjs",
+    "build": "npm --workspace frontend run build",
+    "start:prod": "node backend/src/server.js",
+    "demo:reset": "node database/reset.js",
+    "demo:migrate-catalog": "node database/migrate-catalog.js",
+    "test": "node --test backend/test/*.test.js frontend/test/*.test.cjs",
+    "lint": "npm --workspace frontend run lint && node scripts/check-size.js",
+    "check:size": "node scripts/check-size.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pdfkit": "^0.20.2",
+    "qrcode": "^1.5.4"
+  }
+}

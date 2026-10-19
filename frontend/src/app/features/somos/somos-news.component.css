@@ -1,0 +1,213 @@
+.somos-feed {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  padding-top: 42px;
+}
+.institutional-post {
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(27, 58, 83, 0.1);
+  overflow: hidden;
+}
+.institutional-post > header {
+  align-items: center;
+  background: #149bd7;
+  color: #fff;
+  display: flex;
+  font-size: 11px;
+  font-weight: 600;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 0 11px;
+}
+.institutional-post time {
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.poster {
+  overflow: hidden;
+  position: relative;
+}
+.training-poster {
+  background: linear-gradient(150deg, #fbfdff 0 46%, #eef8fd 46% 100%);
+  border-bottom: 6px solid #139bd7;
+  color: #126db1;
+  min-height: 380px;
+  padding: 26px 28px 43px;
+}
+.poster-kicker {
+  background: #f4ad21;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0 auto 13px;
+  padding: 5px 22px;
+  text-align: center;
+  width: max-content;
+}
+.training-poster h1 {
+  background: #1d78ba;
+  box-shadow: 0 3px 5px rgba(15, 73, 117, 0.18);
+  color: #fff;
+  font-size: 25px;
+  line-height: 1.18;
+  margin: 0 0 13px;
+  padding: 9px 15px;
+  width: max-content;
+}
+.training-poster > p {
+  color: #1875b2;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0;
+  max-width: 88%;
+}
+.poster-body {
+  align-items: center;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 180px 1fr;
+  margin-top: 22px;
+}
+.poster-seal {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+}
+.poster-seal svg {
+  fill: none;
+  height: 92px;
+  stroke: #139bd7;
+  stroke-width: 4;
+  width: 92px;
+}
+.poster-seal span {
+  color: #227ab3;
+  font-size: 11px;
+  font-weight: 700;
+}
+.poster-body ul {
+  color: #1f78b5;
+  display: grid;
+  font-size: 13px;
+  gap: 11px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.poster-body li {
+  padding-left: 26px;
+  position: relative;
+}
+.poster-body li::before {
+  border: 2px solid #1b94cf;
+  border-radius: 50%;
+  content: "";
+  height: 10px;
+  left: 1px;
+  position: absolute;
+  top: 2px;
+  width: 10px;
+}
+.poster-footer {
+  background: #149bd7;
+  bottom: 0;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  left: 0;
+  padding: 9px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+.secondary-post > header {
+  background: #0d8ac5;
+}
+.wellbeing-poster {
+  align-items: center;
+  background: linear-gradient(125deg, #e6f6fb, #dbf1e7);
+  color: #207d80;
+  display: flex;
+  justify-content: space-between;
+  min-height: 260px;
+  padding: 32px;
+}
+.wellbeing-poster span {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+.wellbeing-poster h2 {
+  font-size: 27px;
+  line-height: 1.15;
+  margin: 10px 0;
+}
+.wellbeing-poster p {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+  max-width: 330px;
+}
+.wellbeing-poster svg {
+  fill: none;
+  stroke: #52a99d;
+  stroke-width: 5;
+  width: 210px;
+}
+@media (max-width: 1120px) {
+  .somos-feed {
+    padding-top: 28px;
+  }
+  .training-poster {
+    min-height: 370px;
+    padding: 26px;
+  }
+  .poster-body {
+    grid-template-columns: 140px 1fr;
+  }
+  .training-poster h1 {
+    font-size: 21px;
+  }
+}
+@media (max-width: 760px) {
+  .somos-feed {
+    padding-top: 0;
+  }
+  .institutional-post > header {
+    font-size: 9px;
+  }
+  .institutional-post time {
+    font-size: 8px;
+  }
+  .training-poster {
+    min-height: 360px;
+    padding: 22px;
+  }
+  .poster-kicker {
+    font-size: 14px;
+  }
+  .training-poster h1 {
+    font-size: 19px;
+  }
+  .poster-body {
+    gap: 12px;
+    grid-template-columns: 100px 1fr;
+  }
+  .poster-seal svg {
+    height: 72px;
+    width: 72px;
+  }
+  .poster-body ul {
+    font-size: 10px;
+  }
+  .wellbeing-poster svg {
+    display: none;
+  }
+}

@@ -1,0 +1,147 @@
+.somos-sidebar {
+  background: #fff;
+  border-right: 1px solid #d6dfe8;
+  min-height: calc(100vh - 64px);
+  overflow: auto;
+  width: 350px;
+}
+.worker-card {
+  align-items: center;
+  background: #e6effa;
+  border-bottom: 1px solid #d4e0ee;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 18px 9px;
+  text-align: center;
+}
+.worker-card p {
+  color: #171717;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+.worker-avatar {
+  display: block;
+  height: 77px;
+  margin: 0 0 7px;
+  width: 77px;
+}
+.worker-card strong {
+  color: #131313;
+  font-size: 15px;
+  line-height: 1.2;
+}
+.worker-card span {
+  color: #172331;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.profile-tools {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+.profile-tools button {
+  align-items: center;
+  background: transparent;
+  color: #008bd2;
+  display: flex;
+  padding: 2px;
+}
+.profile-tools svg {
+  fill: currentColor;
+  height: 22px;
+  width: 22px;
+}
+.somos-sidebar nav {
+  padding: 4px 0 12px;
+}
+.menu-item {
+  align-items: center;
+  background: #fff;
+  border-left: 3px solid transparent;
+  border-radius: 0;
+  color: #161616;
+  display: flex;
+  font-size: 17px;
+  font-weight: 400;
+  gap: 22px;
+  line-height: 1.18;
+  min-height: 56px;
+  padding: 10px 20px;
+  text-align: left;
+  width: 100%;
+}
+.menu-item svg {
+  fill: #008bd2;
+  flex: 0 0 24px;
+  height: 24px;
+  width: 24px;
+}
+.menu-item:hover {
+  background: #d9fefc;
+}
+.loans-link {
+  background: #eaf8fb;
+  border-left-color: #008bd2;
+  color: #075c9c;
+  font-weight: 700;
+}
+.loans-link b {
+  background: #008bd2;
+  border-radius: 2px;
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 0.25px;
+  margin-left: auto;
+  padding: 4px 5px;
+}
+@media (max-width: 1120px) {
+  .somos-sidebar {
+    width: 290px;
+  }
+  .menu-item {
+    font-size: 14px;
+    gap: 14px;
+    padding: 9px 14px;
+  }
+}
+@media (max-width: 760px) {
+  .somos-sidebar {
+    min-height: 0;
+    width: auto;
+  }
+  .worker-card {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    column-gap: 12px;
+    text-align: left;
+  }
+  .worker-card p,
+  .worker-card span,
+  .profile-tools {
+    display: none;
+  }
+  .worker-avatar {
+    grid-row: 1/3;
+    height: 62px;
+    margin: 0;
+    width: 62px;
+  }
+  .somos-sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .menu-item {
+    font-size: 12px;
+    gap: 8px;
+    min-height: 52px;
+    padding: 8px;
+  }
+  .menu-item svg {
+    flex-basis: 18px;
+    height: 18px;
+    width: 18px;
+  }
+}
