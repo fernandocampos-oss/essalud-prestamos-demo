@@ -120,3 +120,15 @@ test('el portal bancario usa rutas propias, filtros operativos y una vista de ev
   assert.match(template, /Rechazar solicitud/);
   assert.doesNotMatch(template, /La bandeja está aislada por organización en el backend/);
 });
+
+test('SAP Web consulta el detalle individual y presenta planilla por período', () => {
+  assert.match(source, /p\.startsWith\('\/sap-web\/personal\/'\).*loadSapWorker\(\)/s);
+  assert.match(source, /loadSapWorker\(periodId=''.*\/sap\/workers\/\$\{id\}/s);
+  assert.match(source, /loadSapWorkers\(page=1\).*pageSize/s);
+  assert.match(template, /Consulta de personal y planilla/);
+  assert.match(template, /Consultar planilla/);
+  assert.match(template, /No se dispone de información de planilla para el período seleccionado/);
+  assert.match(template, /Capacidad mensual disponible/);
+  assert.match(template, /Conceptos de planilla/);
+  assert.match(template, /Préstamos asociados/);
+});

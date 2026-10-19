@@ -95,6 +95,33 @@ test('la bandeja bancaria permite filtrar solicitudes y abrir el detalle de su p
   } finally { await close(context); }
 });
 
+test('SAP Web pagina la búsqueda y elige el período más reciente con planilla disponible', async () => {
+  const context = await setup();
+  const base = `http://127.0.0.1:${context.server.address().port}/api`;
+  try {
+    const sap = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'sap.demo', password: 'Demo2026!' }) });
+    const headers = { authorization: `Bearer ${sap.body.token}` };
+    const list = await call(base, '/sap/workers?q=Andrea&page=1&pageSize=5', { headers });
+    assert.equal(list.status, 200);
+    assert.equal(list.body.pagination.total, 1);
+    assert.equal(list.body.items[0].id, 'andrea');
+    const detail = await call(base, '/sap/workers/andrea', { headers });
+    assert.equal(detail.status, 200);
+    assert.equal(detail.body.worker.name, 'Andrea Salazar');
+    assert.equal(detail.body.period.id, 'oct-2026');
+    assert.equal(detail.body.snapshot.concepts.length, 4);
+    assert.equal(detail.body.capacity.availableCentimos, 147000);
+    const noPayroll = await call(base, '/sap/workers/andrea?periodId=nov-2026', { headers });
+    assert.equal(noPayroll.status, 200);
+    assert.equal(noPayroll.body.period.id, 'nov-2026');
+    assert.equal(noPayroll.body.snapshot, null);
+    assert.equal(noPayroll.body.capacity, null);
+    const bank = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'analista.bcp', password: 'Demo2026!' }) });
+    const forbidden = await call(base, '/sap/workers', { headers: { authorization: `Bearer ${bank.body.token}` } });
+    assert.equal(forbidden.status, 403);
+  } finally { await close(context); }
+});
+
 test('la constancia PDF solo se descarga para una autorización vigente del trabajador', async () => {
   const context = await setup();
   const base = `http://127.0.0.1:${context.server.address().port}/api`;

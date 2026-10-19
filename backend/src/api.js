@@ -29,6 +29,25 @@ function bankRequestDetail(db, actor, requestId) {
   const history=db.prepare(`SELECT action,created_at FROM audit_events WHERE (entity='LOAN_REQUEST' AND entity_id=?) OR (entity='LOAN_PROPOSAL' AND entity_id=(SELECT id FROM proposals WHERE request_id=?)) OR (entity='AUTHORIZATION' AND entity_id=(SELECT id FROM authorizations WHERE request_id=?)) ORDER BY created_at ASC`).all(request.id,request.id,request.id);
   return {request:loan.requestSummary(db,request),history};
 }
+function sapWorkers(db, actor, query) {
+  const search=String(query.q||'').trim(); const value=`%${search}%`; const page=Math.max(1,Number.parseInt(query.page,10)||1); const pageSize=Math.min(50,Math.max(5,Number.parseInt(query.pageSize,10)||15));
+  const total=db.prepare('SELECT count(*) n FROM workers WHERE name LIKE ? OR code LIKE ?').get(value,value).n;
+  const items=db.prepare('SELECT * FROM workers WHERE name LIKE ? OR code LIKE ? ORDER BY name LIMIT ? OFFSET ?').all(value,value,pageSize,(page-1)*pageSize);
+  audit(db,actor.sub,'CONSULTA_SAP','WORKER',null,{count:items.length,search:search||null});
+  return {items,pagination:{page,pageSize,total,totalPages:Math.max(1,Math.ceil(total/pageSize))}};
+}
+function sapWorkerDetail(db, actor, workerId, periodId) {
+  const worker=db.prepare('SELECT * FROM workers WHERE id=?').get(workerId); if(!worker)throw Object.assign(new Error('Trabajador no encontrado.'),{status:404});
+  const periods=db.prepare('SELECT * FROM periods ORDER BY starts_on DESC').all();
+  const period=periodId ? periods.find(item=>item.id===periodId) : db.prepare(`SELECT p.* FROM periods p JOIN payroll_snapshots s ON s.period_id=p.id WHERE s.worker_id=? ORDER BY p.starts_on DESC LIMIT 1`).get(worker.id);
+  if(!period)throw Object.assign(new Error('Período no encontrado.'),{status:404});
+  const snapshot=db.prepare('SELECT * FROM payroll_snapshots WHERE worker_id=? AND period_id=?').get(worker.id,period.id);
+  const payroll=snapshot ? {...snapshot,concepts:JSON.parse(snapshot.concepts_json)} : null;
+  const capacity=snapshot ? calculate(db,worker.id,period.id) : null;
+  const loans=db.prepare('SELECT * FROM loans WHERE worker_id=? ORDER BY status,ended_at DESC').all(worker.id);
+  audit(db,actor.sub,'CONSULTA_SAP_DETALLE','WORKER',worker.id,{periodId:period.id,hasPayroll:Boolean(snapshot)});
+  return {worker,period,periods,snapshot:payroll,capacity,loans};
+}
 function api(db) {
   const router = express.Router();
   router.get('/health', (req,res) => { try { db.prepare('SELECT 1').get(); res.json({status:'ok',database:'accessible'}); } catch { res.status(503).json({status:'unavailable',database:'unavailable'}); } });
@@ -69,8 +88,8 @@ function api(db) {
   router.post('/bank/requests/:id/take', roles('ANALISTA_BANCO','ADMIN_BANCO'), mutate(req=>loan.take(db,req.actor,req.params.id,req.body,req.get('Idempotency-Key'))));
   router.post('/bank/requests/:id/reject', roles('ANALISTA_BANCO','ADMIN_BANCO'), mutate(req=>loan.reject(db,req.actor,req.params.id,req.body,req.get('Idempotency-Key'))));
   router.post('/bank/requests/:id/proposal', roles('ANALISTA_BANCO','ADMIN_BANCO'), mutate(req=>loan.propose(db,req.actor,req.params.id,{amountCentimos:Number(req.body.amountCentimos),termMonths:Number(req.body.termMonths),annualRate:req.body.annualRate,paymentCentimos:Number(req.body.paymentCentimos),notes:req.body.notes},req.get('Idempotency-Key'))));
-  router.get('/sap/workers', roles('CONSULTA_PLANILLA','ADMIN_ESSALUD','OPERADOR_ESSALUD'), (req,res)=> { const q=`%${req.query.q||''}%`; const rows=db.prepare('SELECT * FROM workers WHERE name LIKE ? OR code LIKE ? ORDER BY name').all(q,q); audit(db,req.actor.sub,'CONSULTA_SAP','WORKER',null,{count:rows.length}); res.json({items:rows}); });
-  router.get('/sap/workers/:id', roles('CONSULTA_PLANILLA','ADMIN_ESSALUD','OPERADOR_ESSALUD'), mutate(req=> { const worker=db.prepare('SELECT * FROM workers WHERE id=?').get(req.params.id); if(!worker)throw Object.assign(new Error('Trabajador no encontrado.'),{status:404}); const periods=db.prepare('SELECT * FROM periods ORDER BY starts_on DESC').all(); const period=periods.find(p=>p.id===(req.query.periodId||periods[0].id)); const snapshot=db.prepare('SELECT * FROM payroll_snapshots WHERE worker_id=? AND period_id=?').get(worker.id,period.id); const capacity=calculate(db,worker.id,period.id); const loans=db.prepare('SELECT * FROM loans WHERE worker_id=?').all(worker.id); return {worker,period,periods,snapshot:{...snapshot,concepts:JSON.parse(snapshot.concepts_json)},capacity,loans}; }));
+  router.get('/sap/workers', roles('CONSULTA_PLANILLA','ADMIN_ESSALUD','OPERADOR_ESSALUD'), (req,res)=>res.json(sapWorkers(db,req.actor,req.query)));
+  router.get('/sap/workers/:id', roles('CONSULTA_PLANILLA','ADMIN_ESSALUD','OPERADOR_ESSALUD'), mutate(req=>sapWorkerDetail(db,req.actor,req.params.id,req.query.periodId)));
   router.get('/admin/dashboard', roles('ADMIN_ESSALUD'), (req,res)=> { const count=s=>db.prepare('SELECT COUNT(*) n FROM requests WHERE status=?').get(s).n; res.json({activeRequests:db.prepare('SELECT COUNT(*) n FROM requests WHERE blocking=1').get().n,proposals:count('PROPUESTA_EMITIDA'),authorized:count('AUTORIZADA'),openPeriod:db.prepare("SELECT * FROM periods WHERE status='ABIERTO'").get(),finalizedLoans:db.prepare("SELECT COUNT(*) n FROM loans WHERE status='FINALIZADO'").get().n}); });
   router.get('/admin/periods', roles('ADMIN_ESSALUD'), (req,res)=>res.json({items:db.prepare('SELECT * FROM periods ORDER BY starts_on DESC').all()}));
   router.post('/admin/periods/:id/status', roles('ADMIN_ESSALUD'), mutate(req=> { if(!['PREPARACION','ABIERTO','RESTRINGIDO','CERRADO'].includes(req.body.status))throw Object.assign(new Error('Estado de período inválido.'),{status:422}); const p=db.prepare('SELECT * FROM periods WHERE id=?').get(req.params.id);if(!p)throw Object.assign(new Error('Período no encontrado.'),{status:404});db.prepare('UPDATE periods SET status=? WHERE id=?').run(req.body.status,p.id);audit(db,req.actor.sub,'PERIODO_ACTUALIZADO','PERIOD',p.id,{from:p.status,to:req.body.status});return { ...p,status:req.body.status}; }));
