@@ -66,6 +66,34 @@ test('Andrea registra una solicitud para BCP y queda aislada de BBVA Perú', asy
   } finally { await close(context); }
 });
 
+test('la bandeja bancaria permite filtrar solicitudes y abrir el detalle de su propia entidad', async () => {
+  const context = await setup();
+  const base = `http://127.0.0.1:${context.server.address().port}/api`;
+  try {
+    const andrea = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'andrea.demo', password: 'Demo2026!' }) });
+    const created = await call(base, '/worker/requests', { method: 'POST', headers: { authorization: `Bearer ${andrea.body.token}`, 'idempotency-key': 'bank-inbox-filter-andrea' }, body: JSON.stringify({ bankId: 'andino', type: 'NUEVO' }) });
+    assert.equal(created.status, 200);
+    const bcp = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'analista.bcp', password: 'Demo2026!' }) });
+    const inbox = await call(base, `/bank/requests?q=Andrea&status=CREADA&type=NUEVO&periodId=${created.body.period_id}&page=1&pageSize=5`, { headers: { authorization: `Bearer ${bcp.body.token}` } });
+    assert.equal(inbox.status, 200);
+    assert.ok(inbox.body.items.some(request => request.id === created.body.id));
+    assert.equal(inbox.body.pagination.page, 1);
+    assert.equal(inbox.body.pagination.pageSize, 5);
+    assert.ok(inbox.body.pagination.total >= 1);
+    assert.ok(inbox.body.summary.total >= inbox.body.pagination.total);
+    assert.ok(inbox.body.filters.periods.some(period => period.id === created.body.period_id));
+    const detail = await call(base, `/bank/requests/${created.body.id}`, { headers: { authorization: `Bearer ${bcp.body.token}` } });
+    assert.equal(detail.status, 200);
+    assert.equal(detail.body.request.workerName, 'Andrea Salazar');
+    assert.equal(detail.body.request.bankName, 'Banco de Crédito del Perú (BCP)');
+    assert.equal(detail.body.request.type, 'NUEVO');
+    assert.ok(Array.isArray(detail.body.history));
+    const bbva = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'analista.bbva', password: 'Demo2026!' }) });
+    const denied = await call(base, `/bank/requests/${created.body.id}`, { headers: { authorization: `Bearer ${bbva.body.token}` } });
+    assert.equal(denied.status, 404);
+  } finally { await close(context); }
+});
+
 test('la constancia PDF solo se descarga para una autorización vigente del trabajador', async () => {
   const context = await setup();
   const base = `http://127.0.0.1:${context.server.address().port}/api`;

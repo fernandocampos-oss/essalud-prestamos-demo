@@ -17,7 +17,8 @@ function requestSummary(db, request) {
   const period = db.prepare('SELECT label FROM periods WHERE id=?').get(request.period_id);
   const proposal = db.prepare('SELECT * FROM proposals WHERE request_id=?').get(request.id);
   const authorization = db.prepare('SELECT a.*, c.public_code, c.status certificate_status FROM authorizations a LEFT JOIN certificates c ON c.authorization_id=a.id WHERE a.request_id=?').get(request.id);
-  return { ...request, bankName:bank?.name, workerName:worker?.name, workerCode:worker?.code, periodLabel:period?.label, proposal, authorization };
+  const registrationCertificate = db.prepare('SELECT public_code,issued_at FROM request_certificates WHERE request_id=?').get(request.id);
+  return { ...request, bankName:bank?.name, workerName:worker?.name, workerCode:worker?.code, periodLabel:period?.label, proposal, authorization, registrationCertificate };
 }
 function createRequest(db, actor, body, key) {
   return transaction(db, () => idem(db, actor.id, key, body, () => {

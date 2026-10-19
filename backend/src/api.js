@@ -10,6 +10,24 @@ const { createPdf } = require('./request-certificate-pdf');
 const { publicAppUrl } = require('./public-url');
 
 const mutate = fn => async (req,res) => { try { res.json(await fn(req)); } catch (e) { res.status(e.status || 500).json({message:e.message || 'Error inesperado.'}); } };
+function bankInbox(db, actor, query) {
+  const where=['r.bank_id=?']; const values=[actor.organizationId]; const search=String(query.q||'').trim();
+  if (search) { where.push('(r.id LIKE ? OR w.name LIKE ? OR w.code LIKE ?)'); const value=`%${search}%`; values.push(value,value,value); }
+  for (const [key,column] of [['status','r.status'],['type','r.type'],['periodId','r.period_id']]) if (query[key]) { where.push(`${column}=?`); values.push(query[key]); }
+  const page=Math.max(1,Number.parseInt(query.page,10)||1); const pageSize=Math.min(50,Math.max(5,Number.parseInt(query.pageSize,10)||15));
+  const filter=where.join(' AND '); const total=db.prepare(`SELECT count(*) n FROM requests r JOIN workers w ON w.id=r.worker_id WHERE ${filter}`).get(...values).n;
+  const rows=db.prepare(`SELECT r.* FROM requests r JOIN workers w ON w.id=r.worker_id WHERE ${filter} ORDER BY r.created_at DESC LIMIT ? OFFSET ?`).all(...values,pageSize,(page-1)*pageSize);
+  const counts=db.prepare('SELECT status,count(*) n FROM requests WHERE bank_id=? GROUP BY status').all(actor.organizationId);
+  const summary={total:counts.reduce((sum,row)=>sum+row.n,0),created:0,evaluation:0,proposals:0,authorized:0,rejected:0};
+  for (const row of counts) { if(row.status==='CREADA')summary.created+=row.n; else if(row.status==='EN_EVALUACION_BANCO')summary.evaluation+=row.n; else if(row.status==='PROPUESTA_EMITIDA')summary.proposals+=row.n; else if(row.status==='AUTORIZADA')summary.authorized+=row.n; else if(row.status.startsWith('RECHAZADA'))summary.rejected+=row.n; }
+  const periods=db.prepare('SELECT DISTINCT p.id,p.label FROM requests r JOIN periods p ON p.id=r.period_id WHERE r.bank_id=? ORDER BY p.starts_on DESC').all(actor.organizationId);
+  return {items:rows.map(row=>loan.requestSummary(db,row)),summary,filters:{periods},pagination:{page,pageSize,total,totalPages:Math.max(1,Math.ceil(total/pageSize))}};
+}
+function bankRequestDetail(db, actor, requestId) {
+  const request=loan.bankRequest(db,actor,requestId);
+  const history=db.prepare(`SELECT action,created_at FROM audit_events WHERE (entity='LOAN_REQUEST' AND entity_id=?) OR (entity='LOAN_PROPOSAL' AND entity_id=(SELECT id FROM proposals WHERE request_id=?)) OR (entity='AUTHORIZATION' AND entity_id=(SELECT id FROM authorizations WHERE request_id=?)) ORDER BY created_at ASC`).all(request.id,request.id,request.id);
+  return {request:loan.requestSummary(db,request),history};
+}
 function api(db) {
   const router = express.Router();
   router.get('/health', (req,res) => { try { db.prepare('SELECT 1').get(); res.json({status:'ok',database:'accessible'}); } catch { res.status(503).json({status:'unavailable',database:'unavailable'}); } });
@@ -45,8 +63,8 @@ function api(db) {
   router.post('/worker/requests', roles('TRABAJADOR'), mutate(req=>loan.createRequest(db,req.actor,{bankId:req.body.bankId,type:req.body.type},req.get('Idempotency-Key'))));
   router.post('/worker/requests/:id/cancel', roles('TRABAJADOR'), mutate(req=>loan.cancel(db,req.actor,req.params.id,req.body,req.get('Idempotency-Key'))));
   router.post('/worker/requests/:id/respond', roles('TRABAJADOR'), mutate(req=>loan.respond(db,req.actor,req.params.id,req.body,req.get('Idempotency-Key'))));
-  router.get('/bank/requests', roles('ANALISTA_BANCO','ADMIN_BANCO'), (req,res)=> { const status=req.query.status; let sql='SELECT * FROM requests WHERE bank_id=?'; const vals=[req.actor.organizationId]; if(status){sql+=' AND status=?';vals.push(status)} sql+=' ORDER BY created_at DESC'; res.json({items:db.prepare(sql).all(...vals).map(r=>loan.requestSummary(db,r))}); });
-  router.get('/bank/requests/:id', roles('ANALISTA_BANCO','ADMIN_BANCO'), mutate(req=>loan.requestSummary(db,loan.bankRequest(db,req.actor,req.params.id))));
+  router.get('/bank/requests', roles('ANALISTA_BANCO','ADMIN_BANCO'), (req,res)=>res.json(bankInbox(db,req.actor,req.query)));
+  router.get('/bank/requests/:id', roles('ANALISTA_BANCO','ADMIN_BANCO'), mutate(req=>bankRequestDetail(db,req.actor,req.params.id)));
   router.post('/bank/requests/:id/take', roles('ANALISTA_BANCO','ADMIN_BANCO'), mutate(req=>loan.take(db,req.actor,req.params.id,req.body,req.get('Idempotency-Key'))));
   router.post('/bank/requests/:id/reject', roles('ANALISTA_BANCO','ADMIN_BANCO'), mutate(req=>loan.reject(db,req.actor,req.params.id,req.body,req.get('Idempotency-Key'))));
   router.post('/bank/requests/:id/proposal', roles('ANALISTA_BANCO','ADMIN_BANCO'), mutate(req=>loan.propose(db,req.actor,req.params.id,{amountCentimos:Number(req.body.amountCentimos),termMonths:Number(req.body.termMonths),annualRate:req.body.annualRate,paymentCentimos:Number(req.body.paymentCentimos),notes:req.body.notes},req.get('Idempotency-Key'))));

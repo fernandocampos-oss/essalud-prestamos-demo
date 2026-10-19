@@ -97,3 +97,20 @@ test('constancia de solicitud: una acción en detalle, carga independiente y ver
   assert.match(source,/registration-certificate`,\{\},true/);
   assert.match(source,/Código inexistente/);
 });
+
+test('el portal bancario usa rutas propias, filtros operativos y una vista de evaluación', () => {
+  assert.match(source, /brandDestination\(\).*role\?\.includes\('BANCO'\)\?'\/prestamos\/banco'/s);
+  assert.match(source, /p\.startsWith\('\/prestamos\/banco\/solicitudes\/'\).*\/bank\/requests/s);
+  assert.match(source, /loadBankInbox\(page=1\).*URLSearchParams/s);
+  assert.match(source, /query\.set\('q'/);
+  assert.match(source, /query\.set\('status'/);
+  assert.match(source, /query\.set\('type'/);
+  assert.match(source, /query\.set\('periodId'/);
+  assert.match(source, /openBankRequest\(request:any\).*\/prestamos\/banco\/solicitudes/s);
+  assert.match(template, /Resumen operativo/);
+  assert.match(template, /Buscar por código, trabajador o documento/);
+  assert.match(template, /Evaluación de solicitud/);
+  assert.match(template, /Emitir propuesta/);
+  assert.match(template, /Rechazar solicitud/);
+  assert.doesNotMatch(template, /La bandeja está aislada por organización en el backend/);
+});
