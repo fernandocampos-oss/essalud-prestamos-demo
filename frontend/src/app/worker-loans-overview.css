@@ -1,4 +1,4 @@
-.loan-worker-container {
+.loan-worker-container, .loan-bank-container {
   --loan-ink: #17324d;
   --loan-teal: #007f78;
   --loan-blue: #0077c8;

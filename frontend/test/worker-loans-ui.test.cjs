@@ -108,7 +108,13 @@ test('el portal bancario usa rutas propias, filtros operativos y una vista de ev
   assert.match(source, /query\.set\('periodId'/);
   assert.match(source, /openBankRequest\(request:any\).*\/prestamos\/banco\/solicitudes/s);
   assert.match(template, /Resumen operativo/);
-  assert.match(template, /Buscar por código, trabajador o documento/);
+  assert.match(template, /Buscar solicitudes/);
+  assert.match(template, /bank-request-table/);
+  assert.match(template, /Información del trabajador/);
+  assert.match(template, /Capacidad registrada/);
+  assert.match(template, /Historial de movimientos/);
+  assert.match(template, /Portal de entidades financieras/);
+  assert.match(template, /Código, trabajador o documento/);
   assert.match(template, /Evaluación de solicitud/);
   assert.match(template, /Emitir propuesta/);
   assert.match(template, /Rechazar solicitud/);

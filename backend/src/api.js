@@ -21,7 +21,8 @@ function bankInbox(db, actor, query) {
   const summary={total:counts.reduce((sum,row)=>sum+row.n,0),created:0,evaluation:0,proposals:0,authorized:0,rejected:0};
   for (const row of counts) { if(row.status==='CREADA')summary.created+=row.n; else if(row.status==='EN_EVALUACION_BANCO')summary.evaluation+=row.n; else if(row.status==='PROPUESTA_EMITIDA')summary.proposals+=row.n; else if(row.status==='AUTORIZADA')summary.authorized+=row.n; else if(row.status.startsWith('RECHAZADA'))summary.rejected+=row.n; }
   const periods=db.prepare('SELECT DISTINCT p.id,p.label FROM requests r JOIN periods p ON p.id=r.period_id WHERE r.bank_id=? ORDER BY p.starts_on DESC').all(actor.organizationId);
-  return {items:rows.map(row=>loan.requestSummary(db,row)),summary,filters:{periods},pagination:{page,pageSize,total,totalPages:Math.max(1,Math.ceil(total/pageSize))}};
+  const organization=db.prepare("SELECT id,name FROM organizations WHERE id=? AND type='BANCO'").get(actor.organizationId);
+  return {organization,items:rows.map(row=>loan.requestSummary(db,row)),summary,filters:{periods},pagination:{page,pageSize,total,totalPages:Math.max(1,Math.ceil(total/pageSize))}};
 }
 function bankRequestDetail(db, actor, requestId) {
   const request=loan.bankRequest(db,actor,requestId);

@@ -1,17 +1,17 @@
-.loan-worker-header {
+.loan-worker-header, .loan-bank-header {
   background: #0077c8;
   border-bottom-color: color-mix(in srgb, #fff 14%, transparent);
   box-shadow: 0 3px 14px rgba(0, 78, 135, .18);
 }
 
-.loan-worker-header .brand,
-.loan-worker-header .user,
-.loan-worker-header nav a,
-.loan-worker-header .quiet {
+.loan-worker-header .brand, .loan-bank-header .brand,
+.loan-worker-header .user, .loan-bank-header .user,
+.loan-worker-header nav a, .loan-bank-header nav a,
+.loan-worker-header .quiet, .loan-bank-header .quiet {
   color: #fff;
 }
 
-.loan-worker-header .brand {
+.loan-worker-header .brand, .loan-bank-header .brand {
   align-items: center;
   display: inline-flex;
   gap: 10px;
@@ -52,12 +52,12 @@
   padding: 4px 8px;
 }
 
-.loan-worker-header nav {
+.loan-worker-header nav, .loan-bank-header nav {
   align-items: stretch;
   gap: 6px;
 }
 
-.loan-worker-header nav a {
+.loan-worker-header nav a, .loan-bank-header nav a {
   align-items: center;
   border-bottom: 3px solid transparent;
   display: inline-flex;
@@ -65,16 +65,23 @@
   padding: 2px 10px 0;
 }
 
-.loan-worker-header nav a.active,
-.loan-worker-header nav a:hover {
+.loan-worker-header nav a.active, .loan-worker-header nav a:hover,
+.loan-bank-header nav a.active, .loan-bank-header nav a:hover {
   border-bottom-color: #6ed0c5;
 }
 
-.loan-worker-header .quiet {
+.loan-worker-header .quiet, .loan-bank-header .quiet {
   font-size: 13px;
+}
+
+.bank-session-entity {
+  border-left: 1px solid rgba(217, 239, 255, .42);
+  color: #d9efff;
+  font-size: 12px;
+  padding-left: 10px;
 }
 
 @media (max-width: 760px) {
   .loan-institutional-logo { width: 76px; }
-  .loan-product-name small, .loan-demo-badge { display: none; }
+  .loan-product-name small, .loan-demo-badge, .bank-session-entity { display: none; }
 }

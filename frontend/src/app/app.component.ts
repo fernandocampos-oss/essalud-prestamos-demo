@@ -18,6 +18,9 @@ export class AppComponent implements OnInit {
   nav(path:string){this.router.navigateByUrl(path);}
   home(){const r=this.session.user()?.role; return r==='TRABAJADOR'?'/somos/portal':r?.includes('BANCO')?'/prestamos/banco':r==='CONSULTA_PLANILLA'?'/sap-web':'/prestamos/admin';}
   brandDestination(){const role=this.session.user()?.role;return role?.includes('BANCO')?'/prestamos/banco':role==='TRABAJADOR'?'/prestamos':this.home();}
+  isBankUser(){return Boolean(this.session.user()?.role?.includes('BANCO'));}
+  bankOrganizationName(){return this.data()?.organization?.name||this.data()?.request?.bankName||'Entidad financiera';}
+  shortRequestCode(value:string){return value?.length>15?`${value.slice(0,8)}…${value.slice(-4)}`:value;}
   login(){this.submit('/auth/login',{username:this.username,password:this.password},false,(r:any)=>{this.session.set(r);this.nav(this.home());});}
   demo(profile:string){if(!this.demoMode())return;this.submit('/demo/access',{profile},false,(r:any)=>{this.session.set(r);this.nav(profile==='trabajador'?'/somos/login':this.home());});}
   somosLogin(){this.somosSubmitted=true;if(this.session.user()?.role==='TRABAJADOR'){this.nav('/somos/portal');return;}if(this.somosInvalid('document')||this.somosInvalid('password'))return;this.submit('/auth/login',{username:this.somosDocument,password:this.somosPassword},false,(r:any)=>{this.session.set(r);this.nav('/somos/portal');});}

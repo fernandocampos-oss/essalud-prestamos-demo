@@ -76,6 +76,7 @@ test('la bandeja bancaria permite filtrar solicitudes y abrir el detalle de su p
     const bcp = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'analista.bcp', password: 'Demo2026!' }) });
     const inbox = await call(base, `/bank/requests?q=Andrea&status=CREADA&type=NUEVO&periodId=${created.body.period_id}&page=1&pageSize=5`, { headers: { authorization: `Bearer ${bcp.body.token}` } });
     assert.equal(inbox.status, 200);
+    assert.equal(inbox.body.organization.name, 'Banco de Crédito del Perú (BCP)');
     assert.ok(inbox.body.items.some(request => request.id === created.body.id));
     assert.equal(inbox.body.pagination.page, 1);
     assert.equal(inbox.body.pagination.pageSize, 5);
