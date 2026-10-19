@@ -13,5 +13,5 @@ export class Api {
   getFile(url:string){return this.http.get(`/api${url}`,{responseType:'blob'}).pipe(catchError(e=>this.handle(e)));}
   post<T>(url:string,body:unknown,idempotent=false,idempotencyKey?:string){try{return this.http.post<T>(`/api${url}`,body,{headers:idempotencyHeaders(idempotent,idempotencyKey)}).pipe(catchError(e=>this.handle(e)));}catch(error){return throwError(()=>error);}}
   public<T>(url:string){return this.http.get<T>(`/api/public${url}`).pipe(catchError(e=>this.handle(e)));}
-  private handle(e:any){if(e.status===401){sessionStorage.removeItem('demo_token');sessionStorage.removeItem('demo_user');this.router.navigateByUrl('/login');}return throwError(()=>new Error(e.error?.message||'No fue posible completar la operación.'));}
+  private handle(e:any){if(e.status===401){sessionStorage.removeItem('demo_token');sessionStorage.removeItem('demo_user');this.router.navigateByUrl('/login');}return throwError(()=>Object.assign(new Error(e.error?.message||'No fue posible completar la operación.'),{status:e.status}));}
 }

@@ -22,6 +22,7 @@ function openDb() {
   const capacityFields = db.prepare('PRAGMA table_info(capacity_certificates)').all().map(field => field.name);
   if (!capacityFields.includes('valid_until')) db.exec('ALTER TABLE capacity_certificates ADD COLUMN valid_until TEXT;');
   db.prepare("INSERT OR IGNORE INTO parameters VALUES ('constancia.capacidad.vigencia_regla','FIN_PERIODO',1,?,?)").run(now(), 'system');
+  require('./request-certificate-migration').migrateRequestCertificates(db);
   return db;
 }
 

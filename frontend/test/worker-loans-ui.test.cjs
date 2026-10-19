@@ -83,3 +83,17 @@ test('las mutaciones de solicitud y constancia usan el generador central de idem
   assert.match(source, /createRequest\(\).*\/worker\/requests.*true/s);
   assert.match(source, /downloadCapacityCertificate\(\).*\/worker\/capacity-certificates.*,\{\},true/s);
 });
+
+
+test('constancia de solicitud: una acción en detalle, carga independiente y verificación diferenciada', () => {
+  assert.equal((template.match(/Descargar constancia de solicitud/g)||[]).length,1);
+  assert.match(template,/Información de la solicitud[\s\S]*downloadRegistrationCertificate/);
+  assert.match(template,/\[disabled\]="registrationBusy\(\)"/);
+  assert.match(template,/aria-describedby="registration-scope"/);
+  assert.match(template,/registrationError\(\)" role="alert"/);
+  assert.match(template,/documentType==='REGISTRO_SOLICITUD'/);
+  assert.match(template,/data\(\)\.current_status_label/);
+  assert.match(source,/if\(this.registrationBusy\(\)\)return/);
+  assert.match(source,/registration-certificate`,\{\},true/);
+  assert.match(source,/Código inexistente/);
+});

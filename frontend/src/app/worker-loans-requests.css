@@ -98,3 +98,8 @@
   .loan-request-actions button, .loan-proposal-card footer button { width: 100%; }
   .loan-detail-card dl { grid-template-columns: 1fr; }
 }
+
+.loan-registration-document { border-top: 1px solid var(--loan-line); display: grid; gap: 12px; margin-top: 20px; padding-top: 20px; }
+.loan-registration-document button { align-items: center; display: inline-flex; gap: 8px; justify-self: start; }
+.loan-registration-document svg { flex-shrink: 0; }
+.loan-registration-document .error { margin: 0; }

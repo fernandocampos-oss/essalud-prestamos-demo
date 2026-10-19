@@ -5,6 +5,8 @@ const loan = require('./loan-service');
 const { calculate } = require('./capacity');
 const { certificateData, renderCertificatePdf } = require('./certificate-pdf');
 const capacityCertificate = require('./capacity-certificate');
+const requestCertificate = require('./request-certificate');
+const { createPdf } = require('./request-certificate-pdf');
 const { publicAppUrl } = require('./public-url');
 
 const mutate = fn => async (req,res) => { try { res.json(await fn(req)); } catch (e) { res.status(e.status || 500).json({message:e.message || 'Error inesperado.'}); } };
@@ -19,6 +21,19 @@ function api(db) {
   router.post('/worker/capacity-certificates', roles('TRABAJADOR'), mutate(req => capacityCertificate.create(db, req.actor, {}, req.get('Idempotency-Key'), publicAppUrl())));
   router.get('/worker/capacity-certificates/:id/pdf', roles('TRABAJADOR'), async (req,res) => { try { const record=capacityCertificate.summary(capacityCertificate.ownRecord(db,req.actor.workerId,req.params.id),publicAppUrl()); audit(db,req.actor.sub,'CONSTANCIA_CAPACIDAD_DESCARGADA','CAPACITY_CERTIFICATE',record.id,{}); res.set({'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="constancia-capacidad-${record.public_code}.pdf"`}); await capacityCertificate.renderPdf(res,record); } catch (error) { if (!res.headersSent) res.status(error.status||500).json({message:error.message||'No fue posible generar la constancia de capacidad.'}); } });
   router.get('/worker/requests', roles('TRABAJADOR'), (req,res)=> { const rows=db.prepare('SELECT * FROM requests WHERE worker_id=? ORDER BY created_at DESC').all(req.actor.workerId).map(r=>loan.requestSummary(db,r)); res.json({items:rows}); });
+  router.post('/worker/requests/:id/registration-certificate', roles('TRABAJADOR'), mutate(req => {
+    publicAppUrl();
+    return requestCertificate.issue(db, req.actor, req.params.id, req.get('Idempotency-Key'));
+  }));
+  router.get('/worker/requests/:id/registration-certificate.pdf', roles('TRABAJADOR'), async (req,res) => {
+    try {
+      const record = requestCertificate.ownRecord(db, req.actor, req.params.id, publicAppUrl());
+      const pdf = await createPdf(record);
+      audit(db, req.actor.id, 'CONSTANCIA_SOLICITUD_DESCARGADA', 'REQUEST_CERTIFICATE', record.id, {requestId:req.params.id});
+      res.set({'Content-Type':'application/pdf','Cache-Control':'no-store',
+        'Content-Disposition':`attachment; filename="constancia-solicitud-${record.public_code}.pdf"`}).send(pdf);
+    } catch (error) { res.status(error.status||500).json({message:error.message||'No fue posible generar la constancia de solicitud.'}); }
+  });
   router.get('/worker/requests/:id/constancia.pdf', roles('TRABAJADOR'), async (req,res) => { try { const certificate=certificateData(db,req.actor.workerId,req.params.id,publicAppUrl()); audit(db,req.actor.sub,'CONSTANCIA_DESCARGADA','CERTIFICATE',certificate.certificate_id,{requestId:req.params.id}); res.set({'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="constancia-${certificate.public_code}.pdf"`}); await renderCertificatePdf(res,certificate); } catch (error) { if (!res.headersSent) res.status(error.status||500).json({message:error.message||'No fue posible generar la constancia.'}); } });
   router.get('/worker/requests/:id', roles('TRABAJADOR'), mutate(req=> { const request=loan.ownRequest(db,req.actor,req.params.id); const history=db.prepare(`SELECT action,created_at FROM audit_events
     WHERE (entity='LOAN_REQUEST' AND entity_id=?)
@@ -47,5 +62,5 @@ function api(db) {
   router.get('/admin/audit', roles('ADMIN_ESSALUD'), (req,res)=>res.json({items:db.prepare('SELECT a.*,u.name actor_name FROM audit_events a LEFT JOIN users u ON u.id=a.actor_id ORDER BY created_at DESC LIMIT 50').all()}));
   return router;
 }
-function publicApi(db) { const router=express.Router(); router.get('/config',(req,res)=>res.json({demoMode:process.env.DEMO_MODE!=='false'})); router.get('/certificates/:code', mutate(async req=>{const baseUrl=publicAppUrl();const authorization=await loan.certificate(db,req.params.code,baseUrl);if(authorization)return authorization;const capacity=await capacityCertificate.publicRecord(db,req.params.code,baseUrl);if(capacity)return capacity;throw Object.assign(new Error('Constancia no encontrada.'),{status:404});})); return router; }
+function publicApi(db) { const router=express.Router(); router.get('/config',(req,res)=>res.json({demoMode:process.env.DEMO_MODE!=='false'})); router.use('/certificates/:code',(req,res,next)=>{res.set('Cache-Control','no-store');next();}); router.get('/certificates/:code', mutate(async req=>{const baseUrl=publicAppUrl();const registration=await requestCertificate.publicRecord(db,req.params.code,baseUrl);if(registration)return registration;const authorization=await loan.certificate(db,req.params.code,baseUrl);if(authorization)return authorization;const capacity=await capacityCertificate.publicRecord(db,req.params.code,baseUrl);if(capacity)return capacity;throw Object.assign(new Error('Constancia no encontrada.'),{status:404});})); return router; }
 module.exports = { api, publicApi };

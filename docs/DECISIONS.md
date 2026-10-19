@@ -27,3 +27,6 @@
 ## Diferencias registradas con el histórico
 
 SISCON documenta capacidad con 40% y 50% en fuentes distintas, además de conceptos/rangos y fórmulas no verificables en archivos FoxPro compilados. La propuesta nueva parte de 35% parametrizable, catálogos versionados, SQLite ficticio y una arquitectura única. Ningún código, fórmula, UX, modelo o tabla histórica se adopta implícitamente.
+
+## 2026-10-19 — Constancia de registro de solicitud
+Se incorpora un tercer documento independiente con prefijo SOL, snapshot inmutable y verificación del estado actual. Es descargable por el propietario desde el detalle incluso en CREADA. No autoriza descuentos ni modifica propuestas, capacidad o estados. Migración aditiva y detalles en [REQUEST_CERTIFICATE.md](REQUEST_CERTIFICATE.md).

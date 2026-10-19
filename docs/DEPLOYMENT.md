@@ -44,3 +44,6 @@ No crear Dockerfile todavía. Cuando se implemente, usar un único Dockerfile mu
 5. Evitar redeploys durante la exposición salvo incidencia; un disco persistente puede impedir despliegue sin corte.
 
 No se crean hosting, Dockerfile, volumen, credenciales ni despliegue en esta fase.
+
+## Actualización: constancias de solicitud
+La nueva tabla request_certificates se crea idempotentemente en openDb sobre el volumen SQLite existente. No requiere reset. Respaldar consistentemente SQLite y conservar volumen/DB_PATH. Configurar PUBLIC_APP_URL para el origen público actual; cambiar a HTTPS sólo requiere configuración. Procedimiento en [REQUEST_CERTIFICATE.md](REQUEST_CERTIFICATE.md). No se realizó despliegue remoto en esta entrega.

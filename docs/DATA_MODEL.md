@@ -34,3 +34,6 @@
 ## Privacidad y DTOs
 
 El detalle de planilla existe solo para SAP Web y roles autorizados. Banco, trabajador, administración y verificación pública reciben DTOs distintos de mínimo privilegio; no se serializan filas de SQLite/ORM de forma directa. Las consultas y verificación pública registran auditoría proporcional, sin incluir secretos o detalle sensible.
+
+## Constancia de registro implementada
+`request_certificates`: id interno, request_id UNIQUE/FK, public_code UNIQUE, snapshot_json e issued_at. Una fila por solicitud, creada al primer uso; estado actual obtenido de requests y datos de emisión inmutables. Ver [REQUEST_CERTIFICATE.md](REQUEST_CERTIFICATE.md).
