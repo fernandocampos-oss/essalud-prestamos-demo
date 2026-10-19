@@ -7,6 +7,7 @@ const appRoot = path.join(__dirname, '..', 'src', 'app');
 const source = fs.readFileSync(path.join(appRoot, 'app.component.ts'), 'utf8');
 const template = fs.readFileSync(path.join(appRoot, 'app.component.html'), 'utf8');
 const formStyles = fs.readFileSync(path.join(appRoot, 'worker-loans-form.css'), 'utf8');
+const apiSource = fs.readFileSync(path.join(appRoot, 'core', 'api.service.ts'), 'utf8');
 
 test('la autenticación no genera una confirmación de operación', () => {
   assert.doesNotMatch(source, /Operación registrada correctamente/);
@@ -74,4 +75,11 @@ test('la constancia informativa de capacidad se descarga fuera de las solicitude
   assert.match(template, /documentType==='CAPACIDAD_MENSUAL'/);
   assert.match(template, /Constancia informativa de capacidad mensual/);
   assert.doesNotMatch(template, /Solicitud<\/dt><dd>\{\{r\.id\}\}/);
+});
+
+test('las mutaciones de solicitud y constancia usan el generador central de idempotencia compatible con HTTP', () => {
+  assert.match(apiSource, /idempotencyHeaders\(idempotent,idempotencyKey\)/);
+  assert.doesNotMatch(apiSource, /crypto\.randomUUID/);
+  assert.match(source, /createRequest\(\).*\/worker\/requests.*true/s);
+  assert.match(source, /downloadCapacityCertificate\(\).*\/worker\/capacity-certificates.*,\{\},true/s);
 });
