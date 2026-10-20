@@ -95,6 +95,54 @@ test('la bandeja bancaria permite filtrar solicitudes y abrir el detalle de su p
   } finally { await close(context); }
 });
 
+test('la asignación bancaria se confirma una vez y el detalle refleja el estado vigente', async () => {
+  const context = await setup();
+  const base = `http://127.0.0.1:${context.server.address().port}/api`;
+  try {
+    const worker = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'andrea.demo', password: 'Demo2026!' }) });
+    const request = await call(base, '/worker/requests', { method: 'POST', headers: { authorization: `Bearer ${worker.body.token}`, 'idempotency-key': 'bank-take-refresh-request' }, body: JSON.stringify({ bankId: 'andino', type: 'NUEVO' }) });
+    const analyst = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'analista.bcp', password: 'Demo2026!' }) });
+    const headers = { authorization: `Bearer ${analyst.body.token}` };
+    const assigned = await call(base, `/bank/requests/${request.body.id}/take`, { method: 'POST', headers: { ...headers, 'idempotency-key': 'bank-take-refresh-action' }, body: '{}' });
+    assert.equal(assigned.status, 200);
+    const refreshed = await call(base, `/bank/requests/${request.body.id}`, { headers });
+    assert.equal(refreshed.status, 200);
+    assert.equal(refreshed.body.request.status, 'EN_EVALUACION_BANCO');
+    assert.equal(refreshed.body.request.assigned_to, analyst.body.user.id);
+    assert.ok(refreshed.body.history.some(item => item.action === 'SOLICITUD_ASIGNADA'));
+    const repeated = await call(base, `/bank/requests/${request.body.id}/take`, { method: 'POST', headers: { ...headers, 'idempotency-key': 'bank-take-second-action' }, body: '{}' });
+    assert.equal(repeated.status, 409);
+    const afterConflict = await call(base, `/bank/requests/${request.body.id}`, { headers });
+    assert.equal(afterConflict.body.request.status, 'EN_EVALUACION_BANCO');
+  } finally { await close(context); }
+});
+
+test('propuesta y rechazo bancarios se reflejan al recargar el detalle', async () => {
+  const context = await setup();
+  const base = `http://127.0.0.1:${context.server.address().port}/api`;
+  try {
+    const worker = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'andrea.demo', password: 'Demo2026!' }) });
+    const analyst = await call(base, '/auth/login', { method: 'POST', body: JSON.stringify({ username: 'analista.bcp', password: 'Demo2026!' }) });
+    const headers = { authorization: `Bearer ${analyst.body.token}` };
+    const proposedRequest = await call(base, '/worker/requests', { method: 'POST', headers: { authorization: `Bearer ${worker.body.token}`, 'idempotency-key': 'bank-proposal-refresh-request' }, body: JSON.stringify({ bankId: 'andino', type: 'NUEVO' }) });
+    await call(base, `/bank/requests/${proposedRequest.body.id}/take`, { method: 'POST', headers: { ...headers, 'idempotency-key': 'bank-proposal-refresh-take' }, body: '{}' });
+    const proposed = await call(base, `/bank/requests/${proposedRequest.body.id}/proposal`, { method: 'POST', headers: { ...headers, 'idempotency-key': 'bank-proposal-refresh-action' }, body: JSON.stringify({ amountCentimos: 300000, termMonths: 12, annualRate: 14, paymentCentimos: 90000, notes: 'Propuesta de prueba.' }) });
+    assert.equal(proposed.status, 200);
+    const proposalDetail = await call(base, `/bank/requests/${proposedRequest.body.id}`, { headers });
+    assert.equal(proposalDetail.body.request.status, 'PROPUESTA_EMITIDA');
+    assert.ok(proposalDetail.body.history.some(item => item.action === 'PROPUESTA_EMITIDA'));
+    const cancelled = await call(base, `/worker/requests/${proposedRequest.body.id}/cancel`, { method: 'POST', headers: { authorization: `Bearer ${worker.body.token}`, 'idempotency-key': 'bank-proposal-refresh-cancel' }, body: '{}' });
+    assert.equal(cancelled.status, 200);
+    const rejectedRequest = await call(base, '/worker/requests', { method: 'POST', headers: { authorization: `Bearer ${worker.body.token}`, 'idempotency-key': 'bank-reject-refresh-request' }, body: JSON.stringify({ bankId: 'andino', type: 'NUEVO' }) });
+    assert.equal(rejectedRequest.status, 200);
+    const rejected = await call(base, `/bank/requests/${rejectedRequest.body.id}/reject`, { method: 'POST', headers: { ...headers, 'idempotency-key': 'bank-reject-refresh-action' }, body: JSON.stringify({ reason: 'Evaluación no favorable' }) });
+    assert.equal(rejected.status, 200);
+    const rejectionDetail = await call(base, `/bank/requests/${rejectedRequest.body.id}`, { headers });
+    assert.equal(rejectionDetail.body.request.status, 'RECHAZADA_POR_BANCO');
+    assert.ok(rejectionDetail.body.history.some(item => item.action === 'SOLICITUD_RECHAZADA'));
+  } finally { await close(context); }
+});
+
 test('SAP Web pagina la búsqueda y elige el período más reciente con planilla disponible', async () => {
   const context = await setup();
   const base = `http://127.0.0.1:${context.server.address().port}/api`;

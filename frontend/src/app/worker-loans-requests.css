@@ -170,6 +170,10 @@
 .bank-kpi-section > header, .bank-filter-panel > header, .bank-results > header { margin-bottom: 16px; }
 .bank-kpi-section h2, .bank-filter-panel h2, .bank-results h2 { color: var(--loan-ink); font-size: 18px; margin: 3px 0 0; }
 .bank-kpi-section > header > span, .bank-filter-panel > header > span, .bank-results > header > span { color: var(--loan-muted); font-size: 12px; }
+.bank-kpi-section > header > div:last-child { align-items: center; display: flex; gap: 10px; }
+.bank-refresh { font-size: 12px; min-height: 32px; }
+.bank-load-state { background: var(--loan-paper); border: 1px solid var(--loan-line); border-radius: 10px; display: grid; gap: 7px; padding: 24px; }
+.bank-load-state h1 { color: var(--loan-ink); font-size: 20px; margin: 0; }.bank-load-state p { color: var(--loan-copy); margin: 0; }
 .bank-metrics { display: grid; gap: 10px; grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .bank-metrics article { background: #f9fcfe; border: 1px solid var(--loan-line); border-radius: 8px; display: grid; gap: 9px; min-height: 96px; padding: 14px; }
 .bank-metrics article::before { background: var(--loan-blue); border-radius: 2px; content: ""; height: 3px; width: 24px; }
@@ -203,6 +207,7 @@
 .bank-pagination { align-items: center; border-top: 1px solid var(--loan-line); color: var(--loan-muted); display: flex; font-size: 13px; justify-content: space-between; padding-top: 14px; }
 .bank-pagination div { display: flex; gap: 8px; }
 .bank-detail-page { max-width: 1240px; }
+.bank-detail-heading-actions { align-items: center; display: flex; gap: 12px; }
 .bank-detail-grid { align-items: start; display: grid; gap: 16px; grid-template-columns: repeat(12, minmax(0, 1fr)); }
 .bank-detail-card, .bank-capacity-card, .bank-evaluation-card { background: var(--loan-paper); border: 1px solid var(--loan-line); border-radius: 10px; display: grid; gap: 11px; padding: 17px; }
 .bank-detail-card h2, .bank-evaluation-card h2 { color: var(--loan-ink); font-size: 18px; line-height: 1.2; margin: 1px 0 0; }

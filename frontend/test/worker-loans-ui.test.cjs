@@ -145,6 +145,23 @@ test('el detalle bancario organiza resumen, acción operativa y trazabilidad sin
   assert.match(requestStyles, /@media \(max-width: 760px\)[\s\S]*\.bank-detail-grid\s*\{\s*grid-template-columns: 1fr/);
 });
 
+test('el portal banco conserva estados separados, sincroniza mutaciones y controla conflictos', () => {
+  assert.match(source, /bankInbox=signal<any\|null>\(null\).*bankDetail=signal<any\|null>\(null\)/);
+  assert.match(source, /loadBankInbox\(page=1\)[\s\S]*bankInbox\.set\(result\)/);
+  assert.match(source, /loadBankDetail\(id=this\.path\(\)\.split\('\/'\)\.pop\(\)!\)[\s\S]*bankDetail\.set\(result\)/);
+  assert.match(source, /version!==this\.bankInboxVersion/);
+  assert.match(source, /version!==this\.bankDetailVersion/);
+  assert.match(source, /if\(this\.bankAction\(\)\)return/);
+  assert.match(source, /if\(e\.status===409\)[\s\S]*pendingBankConflict/);
+  assert.match(source, /Esta solicitud ya está asignada a usted/);
+  assert.match(source, /Esta solicitud ya fue asignada a otro analista/);
+  assert.match(template, /path\(\)==='\/prestamos\/banco'&&bankInbox\(\) as inbox/);
+  assert.match(template, /startsWith\('\/prestamos\/banco\/solicitudes\/'\)&&bankDetail\(\) as detail/);
+  assert.match(template, /Asignando…/);
+  assert.match(template, /bankDetailLoading\(\)/);
+  assert.match(template, /bankInboxLoading\(\)/);
+});
+
 test('SAP Web consulta el detalle individual y presenta planilla por período', () => {
   assert.match(source, /p\.startsWith\('\/sap-web\/personal\/'\).*loadSapWorker\(\)/s);
   assert.match(source, /loadSapWorker\(periodId=''.*\/sap\/workers\/\$\{id\}/s);
