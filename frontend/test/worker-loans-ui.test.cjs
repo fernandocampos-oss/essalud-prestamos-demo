@@ -122,9 +122,9 @@ test('el portal bancario usa rutas propias, filtros operativos y una vista de ev
   assert.match(template, /Resumen operativo/);
   assert.match(template, /Buscar solicitudes/);
   assert.match(template, /bank-request-table/);
-  assert.match(template, /bank-worker-summary[\s\S]*Código de trabajador/);
+  assert.match(template, /bank-case-identifiers[\s\S]*workerCode/);
   assert.match(template, /Capacidad registrada/);
-  assert.match(template, /Historial de movimientos/);
+  assert.match(template, /Historial de la solicitud/);
   assert.match(template, /Portal de entidades financieras/);
   assert.match(template, /Código, trabajador o documento/);
   assert.match(template, /Evaluación de solicitud/);
@@ -134,13 +134,14 @@ test('el portal bancario usa rutas propias, filtros operativos y una vista de ev
 });
 
 test('el detalle bancario organiza resumen, acción operativa y trazabilidad sin alterar sus acciones', () => {
-  assert.match(template, /bank-worker-summary[\s\S]*Código de trabajador/);
-  assert.match(template, /bank-request-summary[\s\S]*Referencia[\s\S]*Entidad financiera[\s\S]*Período/);
-  assert.match(template, /bank-capacity-card[\s\S]*Capacidad mensual registrada/);
+  assert.match(template, /bank-case-identifiers[\s\S]*workerCode[\s\S]*operationLabel\(detail\.request\.type\)[\s\S]*bankName/);
+  assert.match(template, /bank-summary-card[\s\S]*Referencia[\s\S]*Fecha de registro[\s\S]*Período[\s\S]*Capacidad mensual registrada/);
+  assert.doesNotMatch(template, /bank-worker-summary/);
+  assert.match(template, /bank-certificate-strip[\s\S]*No emitida[\s\S]*El trabajador aún no ha generado la constancia de registro/);
   assert.match(template, /bank-certificate-code[\s\S]*public_code[\s\S]*Consultar verificación/);
   assert.match(template, /bank-assignment-card[\s\S]*Asignarme solicitud/);
   assert.match(template, /bank-rejection-panel[\s\S]*Rechazar solicitud/);
-  assert.match(template, /bank-history-card[\s\S]*<time>\{\{item\.created_at\|date:'dd\/MM\/yyyy, HH:mm'\}\}<\/time>/);
+  assert.match(template, /bank-history-card[\s\S]*Historial de la solicitud[\s\S]*<time>\{\{item\.created_at\|date:'dd\/MM\/yyyy, HH:mm'\}\}<\/time>/);
   assert.match(requestStyles, /\.bank-detail-grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(12, minmax\(0, 1fr\)\)/);
   assert.match(requestStyles, /@media \(max-width: 760px\)[\s\S]*\.bank-detail-grid\s*\{\s*grid-template-columns: 1fr/);
 });
